@@ -351,29 +351,36 @@ def clean(sid):
         if removed:
             steps.append({'type': 'duplicates', 'msg': f'Removed {removed} duplicate row(s) from dataset'})
 
-    # 4. Outlier Filtering
+    # 4. Outlier Filtering (IQR vs Z-Score)
     if opts.get('remove_outliers', True):
         before = len(df)
-        strategy = opts.get('outlier_strategy', 'zscore')
+        method = (opts.get('outlier_method') or opts.get('outlier_strategy') or 'iqr').lower()
         numeric_cols = df.select_dtypes(include=[np.number]).columns
         mask = pd.Series(True, index=df.index)
+        
         for col in numeric_cols:
             series = df[col]
             if series.std(ddof=0) == 0 or series.nunique() <= 2:
                 continue
-            if strategy == 'zscore':
-                z = (series - series.mean()) / (series.std(ddof=0) or 1)
-                mask &= z.abs() <= 4
+            if method == 'zscore':
+                # Z-Score: z = (x - mu) / sigma; flag |z| > 3.0
+                mean_val = series.mean()
+                std_val = series.std(ddof=0) or 1.0
+                z = (series - mean_val) / std_val
+                mask &= z.abs() <= 3.0
             else:
+                # IQR: Q1 (25th pct), Q3 (75th pct), IQR = Q3 - Q1; bounds [Q1 - 1.5*IQR, Q3 + 1.5*IQR]
                 q1, q3 = series.quantile(0.25), series.quantile(0.75)
                 iqr = q3 - q1
                 if iqr == 0:
                     continue
                 mask &= series.between(q1 - 1.5 * iqr, q3 + 1.5 * iqr)
+                
         df = df[mask]
         removed = before - len(df)
         if removed:
-            steps.append({'type': 'outliers', 'msg': f'Filtered {removed} outlier row(s) using {strategy.upper()} method'})
+            method_desc = "Interquartile Range (IQR = Q3 - Q1, bounds: Q1 - 1.5*IQR to Q3 + 1.5*IQR)" if method == 'iqr' else "Z-Score (z = (x - μ) / σ, threshold: |z| ≤ 3.0)"
+            steps.append({'type': 'outliers', 'msg': f'Filtered {removed} outlier row(s) using {method_desc}'})
 
     clean_rows = len(df)
     total_removed = original_rows - clean_rows
@@ -389,6 +396,42 @@ def clean(sid):
         'quality_score': quality_score,
         'steps': steps,
     })
+
+
+@app.route('/clean/<sid>/download')
+def download_cleaned_dataset(sid):
+    sess = SESSIONS.get(sid)
+    if not sess or sess.get('clean_df') is None:
+        return jsonify({'error': 'No cleaned dataset found for this session. Please clean dataset first.'}), 404
+
+    clean_df = sess['clean_df']
+    orig_filename = sess.get('filename', 'cleaned_dataset.csv')
+    ext = orig_filename.rsplit('.', 1)[1].lower() if '.' in orig_filename else 'csv'
+    
+    clean_filename = f"cleaned_{orig_filename}"
+    buf = io.BytesIO()
+
+    if ext == 'csv':
+        clean_df.to_csv(buf, index=False)
+        mimetype = 'text/csv'
+    elif ext == 'tsv':
+        clean_df.to_csv(buf, sep='\t', index=False)
+        mimetype = 'text/tab-separated-values'
+    elif ext == 'json':
+        clean_df.to_json(buf, orient='records', indent=2)
+        mimetype = 'application/json'
+    elif ext == 'parquet':
+        clean_df.to_parquet(buf, index=False)
+        mimetype = 'application/octet-stream'
+    elif ext in ['txt']:
+        clean_df.to_csv(buf, sep=' ', index=False)
+        mimetype = 'text/plain'
+    else:
+        clean_df.to_csv(buf, index=False)
+        mimetype = 'text/csv'
+
+    buf.seek(0)
+    return send_file(buf, mimetype=mimetype, as_attachment=True, download_name=clean_filename)
 
 
 # ─────────────────────────────────────────────

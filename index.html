@@ -544,6 +544,20 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
   font-weight: 700; font-family: var(--font-heading); color: var(--accent-purple);
   margin-bottom: 4px; display: flex; align-items: center; gap: 4px; font-size: 0.8rem;
 }
+
+/* 40% Opaque Light Yellow Upload Cards for Data Cleaning */
+.cleaning-upload-card {
+  background: rgba(254, 243, 199, 0.4);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 18px;
+  transition: all 0.2s;
+}
+[data-theme="dark"] .cleaning-upload-card {
+  background: rgba(120, 53, 15, 0.4);
+  border-color: rgba(217, 119, 6, 0.5);
+}
 </style>
 </head>
 <body>
@@ -687,8 +701,8 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
           <span id="themeLabel">Dark</span>
         </button>
 
-        <!-- About Pill Button -->
-        <button class="about-pill" onclick="openAboutModal()">
+        <!-- About Pill Button (Navigates to dedicated About page) -->
+        <button class="about-pill" onclick="navigateTo('about')">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
           About
         </button>
@@ -799,45 +813,141 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
       <!-- 3. DATASET CLEANING PAGE -->
       <div class="view-page" id="page-cleaning">
         <div class="page-header">
-          <h1 class="page-title">Dataset Cleaning</h1>
-          <p class="page-subtitle">Upload your raw tabular dataset and click 'Run Automated Cleaning' to impute missing values, drop duplicates, and view an audit timeline.</p>
+          <h1 class="page-title">Dataset Cleaning Engine</h1>
+          <p class="page-subtitle">Upload up to 3 raw tabular datasets simultaneously, select outlier cleaning methods (IQR vs Z-Score), and download processed files in their original formats.</p>
         </div>
 
         <details class="how-it-works">
           <summary><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> How this works</summary>
           <ol class="step-list">
-            <li>Select a dataset file (.csv, .json, .tsv, .parquet, .txt) from your local system.</li>
-            <li>Click <strong>"Run Automated Cleaning"</strong> to trigger server-side Pandas data quality transforms.</li>
-            <li>Review clean row counts, quality index score, and step-by-step audit logs.</li>
+            <li>Select up to 3 dataset files (.csv, .json, .tsv, .parquet, .txt) in the 40% opaque light yellow upload cards below.</li>
+            <li>Choose outlier detection method on the right bar: <strong>IQR</strong> (Interquartile Range) or <strong>Z-Score</strong> (standard deviations). Hover for 20-word explanations.</li>
+            <li>Click <strong>"Clean Dataset"</strong> or <strong>"Clean All 3 Datasets"</strong> to generate step-by-step audit reports and download cleaned files in original format.</li>
           </ol>
         </details>
 
-        <div class="card">
-          <div class="card-header">Upload Dataset for Cleaning</div>
-          <input type="file" id="cleanFileInput" accept=".csv,.json,.tsv,.parquet,.txt" onchange="handleDatasetUpload(event)" style="margin-bottom:14px; display:block;">
-          <div style="display:flex; gap:12px; flex-wrap:wrap;">
-            <button class="btn btn-primary" onclick="triggerCleaning()">Run Automated Cleaning</button>
+        <!-- 3 Upload Boxes with 40% Opaque Light Yellow Background -->
+        <!-- Box 1 -->
+        <div class="cleaning-upload-card" id="uploadCard1">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+            <div style="font-weight:700; font-family:var(--font-heading); font-size:1rem; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+              <span style="background:var(--accent-yellow); color:#FFF; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">1</span>
+              Dataset Upload Box #1
+            </div>
+            
+            <!-- Right side outlier method selection bar -->
+            <div style="display:flex; align-items:center; gap:8px; background:var(--bg-card); padding:6px 12px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+              <span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">Outlier Method:</span>
+              <div class="gemini-tooltip-badge" style="margin:0;">
+                <input type="radio" name="outlierMethod1" value="iqr" id="method1_iqr" checked style="accent-color:var(--accent-primary);">
+                <label for="method1_iqr" style="cursor:pointer;">IQR Method</label>
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">📊 IQR (Interquartile Range)</div>
+                  IQR measures spread of the middle 50% data between 25th and 75th percentiles ($IQR = Q3 - Q1$). Outliers are marked outside $[Q1 - 1.5 \cdot IQR, Q3 + 1.5 \cdot IQR]$.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge" style="margin:0;">
+                <input type="radio" name="outlierMethod1" value="zscore" id="method1_zscore" style="accent-color:var(--accent-primary);">
+                <label for="method1_zscore" style="cursor:pointer;">Z-Score Method</label>
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">📈 Z-Score Standard Deviation</div>
+                  Z-Score standardizes values measuring how many standard deviations ($z = (x - \mu)/\sigma$) a point lies from the mean, flagging outliers where $|z| > 3.0$.
+                </div>
+              </div>
+            </div>
           </div>
+
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <input type="file" id="cleanFileInput1" accept=".csv,.json,.tsv,.parquet,.txt" onchange="handleDatasetUploadBox(event, 1)" style="flex:1;">
+            <button class="btn btn-primary" onclick="triggerCleaningBox(1)">Clean Dataset 1 →</button>
+          </div>
+          <div id="cleanFileStatus1" style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);"></div>
         </div>
 
-        <!-- Empty state when no dataset uploaded -->
-        <div class="empty-state-card" id="cleanEmptyState">
-          <div class="empty-state-title">Ready to Clean Your Data</div>
-          <div class="empty-state-desc">Select a dataset file above to upload it to backend storage. Once uploaded, automated cleaning will handle missing values, duplicates, and outliers.</div>
+        <!-- Box 2 -->
+        <div class="cleaning-upload-card" id="uploadCard2">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+            <div style="font-weight:700; font-family:var(--font-heading); font-size:1rem; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+              <span style="background:var(--accent-yellow); color:#FFF; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">2</span>
+              Dataset Upload Box #2
+            </div>
+            
+            <!-- Right side outlier method selection bar -->
+            <div style="display:flex; align-items:center; gap:8px; background:var(--bg-card); padding:6px 12px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+              <span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">Outlier Method:</span>
+              <div class="gemini-tooltip-badge" style="margin:0;">
+                <input type="radio" name="outlierMethod2" value="iqr" id="method2_iqr" checked style="accent-color:var(--accent-primary);">
+                <label for="method2_iqr" style="cursor:pointer;">IQR Method</label>
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">📊 IQR (Interquartile Range)</div>
+                  IQR measures spread of the middle 50% data between 25th and 75th percentiles ($IQR = Q3 - Q1$). Outliers are marked outside $[Q1 - 1.5 \cdot IQR, Q3 + 1.5 \cdot IQR]$.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge" style="margin:0;">
+                <input type="radio" name="outlierMethod2" value="zscore" id="method2_zscore" style="accent-color:var(--accent-primary);">
+                <label for="method2_zscore" style="cursor:pointer;">Z-Score Method</label>
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">📈 Z-Score Standard Deviation</div>
+                  Z-Score standardizes values measuring how many standard deviations ($z = (x - \mu)/\sigma$) a point lies from the mean, flagging outliers where $|z| > 3.0$.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <input type="file" id="cleanFileInput2" accept=".csv,.json,.tsv,.parquet,.txt" onchange="handleDatasetUploadBox(event, 2)" style="flex:1;">
+            <button class="btn btn-primary" onclick="triggerCleaningBox(2)">Clean Dataset 2 →</button>
+          </div>
+          <div id="cleanFileStatus2" style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);"></div>
         </div>
 
-        <div class="card" id="cleanReportCard" style="display:none;">
-          <div class="card-header">Cleaning Timeline & Report</div>
-          <div class="metrics-grid">
-            <div class="metric-box"><div class="metric-val" id="metricOrigRows">0</div><div class="metric-lbl">Original Rows</div></div>
-            <div class="metric-box"><div class="metric-val" id="metricCleanRows">0</div><div class="metric-lbl">Clean Rows</div></div>
-            <div class="metric-box"><div class="metric-val" id="metricRemovedRows">0</div><div class="metric-lbl">Removed Diff</div></div>
-            <div class="metric-box"><div class="metric-val" id="metricQualityScore">0%</div><div class="metric-lbl">Quality Index</div></div>
+        <!-- Box 3 -->
+        <div class="cleaning-upload-card" id="uploadCard3">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+            <div style="font-weight:700; font-family:var(--font-heading); font-size:1rem; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+              <span style="background:var(--accent-yellow); color:#FFF; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">3</span>
+              Dataset Upload Box #3
+            </div>
+            
+            <!-- Right side outlier method selection bar -->
+            <div style="display:flex; align-items:center; gap:8px; background:var(--bg-card); padding:6px 12px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+              <span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">Outlier Method:</span>
+              <div class="gemini-tooltip-badge" style="margin:0;">
+                <input type="radio" name="outlierMethod3" value="iqr" id="method3_iqr" checked style="accent-color:var(--accent-primary);">
+                <label for="method3_iqr" style="cursor:pointer;">IQR Method</label>
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">📊 IQR (Interquartile Range)</div>
+                  IQR measures spread of the middle 50% data between 25th and 75th percentiles ($IQR = Q3 - Q1$). Outliers are marked outside $[Q1 - 1.5 \cdot IQR, Q3 + 1.5 \cdot IQR]$.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge" style="margin:0;">
+                <input type="radio" name="outlierMethod3" value="zscore" id="method3_zscore" style="accent-color:var(--accent-primary);">
+                <label for="method3_zscore" style="cursor:pointer;">Z-Score Method</label>
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">📈 Z-Score Standard Deviation</div>
+                  Z-Score standardizes values measuring how many standard deviations ($z = (x - \mu)/\sigma$) a point lies from the mean, flagging outliers where $|z| > 3.0$.
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="timeline-log" id="cleaningTimeline">
-            <!-- Timeline items -->
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <input type="file" id="cleanFileInput3" accept=".csv,.json,.tsv,.parquet,.txt" onchange="handleDatasetUploadBox(event, 3)" style="flex:1;">
+            <button class="btn btn-primary" onclick="triggerCleaningBox(3)">Clean Dataset 3 →</button>
           </div>
+          <div id="cleanFileStatus3" style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);"></div>
+        </div>
+
+        <button class="btn btn-purple btn-full" style="padding:14px; font-size:0.95rem; margin-bottom:24px;" onclick="triggerCleanAllBoxes()">
+          Clean & Process All 3 Datasets Simultaneously →
+        </button>
+
+        <!-- Reports Container for Box 1, Box 2, Box 3 -->
+        <div id="cleanReportsContainer">
+          <!-- Dynamically populated report cards & download bars for uploaded datasets -->
         </div>
       </div>
 
@@ -1158,6 +1268,87 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
         </div>
       </div>
 
+      <!-- 8. ABOUT DATADEALERS PAGE -->
+      <div class="view-page" id="page-about">
+        <div class="page-header">
+          <h1 class="page-title">About DataDealers</h1>
+          <p class="page-subtitle">Unified AI/ML Data Engineering & Model Guidance Platform — Interdisciplinary Project Report (CSE-8)</p>
+        </div>
+
+        <div class="card" style="margin-bottom:20px; padding:24px;">
+          <h2 style="font-family:var(--font-heading); font-size:1.2rem; font-weight:700; color:var(--accent-primary); margin-bottom:10px;">Platform Overview</h2>
+          <p style="font-size:0.92rem; color:var(--text-main); line-height:1.7;">
+            Data Dealers is a unified, beginner-accessible web platform designed to guide engineering students, hackathon participants, and early-career developers through every phase of the AI/ML project lifecycle. It combines structured learning material, automated dataset cleaning, intelligent model recommendation, and testing into one seamless guided workflow.
+          </p>
+        </div>
+
+        <h3 style="font-family:var(--font-heading); font-size:1.05rem; font-weight:700; color:var(--text-main); margin-bottom:14px;">Core System Modules</h3>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+          <div class="card" style="padding:16px;">
+            <div style="font-weight:700; color:var(--accent-purple); font-size:0.95rem; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              1. Learning Materials Module
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">
+              Provides easy-to-understand guides covering fundamental AI data concepts, labeling conventions, and common pitfalls, creating an educational foundation for beginner practitioners.
+            </p>
+          </div>
+
+          <div class="card" style="padding:16px;">
+            <div style="font-weight:700; color:var(--accent-primary); font-size:0.95rem; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              2. Dataset Discovery Module
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">
+              Enables users to quickly discover, filter, and stream curated, AI-ready datasets tailored to their specific project goals, eliminating tedious search across general-purpose repositories.
+            </p>
+          </div>
+
+          <div class="card" style="padding:16px;">
+            <div style="font-weight:700; color:var(--accent-purple); font-size:0.95rem; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              3. Model Guidance Module
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">
+              Accepts plain-language project objectives and data characteristics to recommend optimal machine learning algorithms, input data formats, and training strategies.
+            </p>
+          </div>
+
+          <div class="card" style="padding:16px;">
+            <div style="font-weight:700; color:var(--accent-yellow); font-size:0.95rem; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+              4. Data Cleaning Module
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">
+              Automatically cleans raw uploaded datasets by handling missing values and outlier detection via IQR or Z-Score statistical methods, generating structured, ready-to-train files.
+            </p>
+          </div>
+
+          <div class="card" style="padding:16px; grid-column: span 2;">
+            <div style="font-weight:700; color:var(--success); font-size:0.95rem; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              5. Testing & Training Framework Module
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">
+              Offers interactive model testing, custom model artifact evaluation, and k-fold cross-validation execution while surfacing execution logs and precision metrics.
+            </p>
+          </div>
+        </div>
+
+        <!-- Teammates Credit Card -->
+        <div class="card" style="padding:24px; border:2px solid var(--accent-primary); background:var(--accent-subtle);">
+          <div style="font-family:var(--font-mono); font-size:0.95rem; font-weight:700; color:var(--text-main); white-space:pre-wrap; line-height:1.8;">
+----- Teammates -----
+Students of CSE-8 (SEM 2)
+1)Aditya Rohan Chourasia (1TD25CS016) 
+2)Sooraj G.                         (1TE25CS284)
+3)Arya Shetty                     (1TE25CS040)
+4)Bhuvanesh D.                  (1TE25CS069)
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1329,7 +1520,8 @@ function navigateTo(pageId) {
       'datasets': { group: 'Data Works', groupPage: 'datasets', label: 'Dataset Supply' },
       'test': { group: 'Model Works', groupPage: 'test', label: 'Testing Framework' },
       'training': { group: 'Model Works', groupPage: 'training', label: 'Training Framework' },
-      'profile': { label: 'User Profile' }
+      'profile': { label: 'User Profile' },
+      'about': { label: 'About DataDealers' }
     };
     const info = pagesMap[pageId] || { label: pageId };
     if (info.group) {
@@ -1621,10 +1813,16 @@ async function handleAdminDatasetUpload(e) {
   }
 }
 
-// --- Upload & Cleaning Flow ---
-async function handleDatasetUpload(e) {
+// --- Multi-Upload & Cleaning Flow (3 Yellow Upload Boxes with IQR/Z-Score & Downloads) ---
+let boxSessions = { 1: null, 2: null, 3: null };
+
+async function handleDatasetUploadBox(e, boxIndex) {
   const file = e.target.files[0];
   if (!file) return;
+  
+  const statusEl = document.getElementById(`cleanFileStatus${boxIndex}`);
+  if (statusEl) statusEl.innerHTML = '<span class="spinner"></span> Uploading dataset...';
+  
   const formData = new FormData();
   formData.append('file', file);
 
@@ -1633,45 +1831,121 @@ async function handleDatasetUpload(e) {
     const data = await res.json();
     if (res.ok) {
       currentSessionId = data.session_id;
-      const emptyState = document.getElementById('cleanEmptyState');
-      if (emptyState) emptyState.style.display = 'none';
-      alert(`File "${data.filename}" uploaded successfully! Session ID: ${data.session_id}`);
+      boxSessions[boxIndex] = {
+        sessionId: data.session_id,
+        filename: data.filename || file.name,
+        rows: data.n_rows,
+        cols: data.n_cols
+      };
+      if (statusEl) {
+        statusEl.innerHTML = `<span style="color:var(--success); font-weight:600;">✓ Ready: "${data.filename}" (${data.n_rows} rows, ${data.n_cols} cols)</span>`;
+      }
     } else {
-      alert(data.error || 'Upload failed.');
+      if (statusEl) statusEl.innerHTML = `<span style="color:var(--accent-red);">${data.error || 'Upload failed.'}</span>`;
     }
   } catch (err) {
     showOfflineState();
   }
 }
 
-async function triggerCleaning() {
-  if (!currentSessionId) return alert('Please upload a dataset file first.');
+async function triggerCleaningBox(boxIndex) {
+  const sessInfo = boxSessions[boxIndex];
+  if (!sessInfo || !sessInfo.sessionId) {
+    return alert(`Please select a dataset file for Box #${boxIndex} first.`);
+  }
+
+  const isIQR = document.getElementById(`method${boxIndex}_iqr`)?.checked;
+  const outlierMethod = isIQR ? 'iqr' : 'zscore';
+
+  const statusEl = document.getElementById(`cleanFileStatus${boxIndex}`);
+  if (statusEl) statusEl.innerHTML = `<span class="spinner"></span> Cleaning dataset using ${outlierMethod.toUpperCase()} method...`;
 
   try {
-    const res = await fetch(`${API_BASE}/clean/${currentSessionId}`, {
+    const res = await fetch(`${API_BASE}/clean/${sessInfo.sessionId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ remove_duplicates: true, fix_types: true, remove_outliers: true })
+      body: JSON.stringify({
+        remove_duplicates: true,
+        fix_types: true,
+        remove_outliers: true,
+        outlier_method: outlierMethod
+      })
     });
     const data = await res.json();
 
     if (res.ok) {
-      document.getElementById('cleanReportCard').style.display = 'block';
-      document.getElementById('metricOrigRows').textContent = data.original_rows;
-      document.getElementById('metricCleanRows').textContent = data.clean_rows;
-      document.getElementById('metricRemovedRows').textContent = data.total_removed;
-      document.getElementById('metricQualityScore').textContent = `${data.quality_score}%`;
-
-      document.getElementById('cleaningTimeline').innerHTML = (data.steps || []).map(s => `
-        <div class="timeline-item">
-          <svg class="icon icon-sm" viewBox="0 0 24 24" style="color:var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          <div>${s.msg}</div>
-        </div>
-      `).join('');
+      if (statusEl) statusEl.innerHTML = `<span style="color:var(--success); font-weight:600;">✓ Cleaning complete!</span>`;
+      renderCleaningReportCard(boxIndex, sessInfo, data, outlierMethod);
+    } else {
+      if (statusEl) statusEl.innerHTML = `<span style="color:var(--accent-red);">${data.error || 'Cleaning failed.'}</span>`;
     }
   } catch (err) {
     showOfflineState();
   }
+}
+
+async function triggerCleanAllBoxes() {
+  let anyUploaded = false;
+  for (let i = 1; i <= 3; i++) {
+    if (boxSessions[i] && boxSessions[i].sessionId) {
+      anyUploaded = true;
+      await triggerCleaningBox(i);
+    }
+  }
+  if (!anyUploaded) {
+    alert('Please upload at least 1 dataset in Box 1, Box 2, or Box 3 before clicking Clean All.');
+  }
+}
+
+function renderCleaningReportCard(boxIndex, sessInfo, data, outlierMethod) {
+  const container = document.getElementById('cleanReportsContainer');
+  let cardEl = document.getElementById(`cleanReportCard_${boxIndex}`);
+  if (!cardEl) {
+    cardEl = document.createElement('div');
+    cardEl.id = `cleanReportCard_${boxIndex}`;
+    cardEl.className = 'card';
+    cardEl.style.marginBottom = '20px';
+    container.appendChild(cardEl);
+  }
+
+  const fileExt = sessInfo.filename.includes('.') ? sessInfo.filename.split('.').pop().toLowerCase() : 'csv';
+
+  cardEl.innerHTML = `
+    <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+      <span>Cleaning Report — Box #${boxIndex} (${sessInfo.filename})</span>
+      <span style="font-size:0.78rem; font-weight:600; background:var(--accent-subtle); color:var(--accent-primary); padding:3px 8px; border-radius:var(--radius-sm);">
+        Outlier Method: ${outlierMethod.toUpperCase()}
+      </span>
+    </div>
+    
+    <div class="metrics-grid">
+      <div class="metric-box"><div class="metric-val">${data.original_rows}</div><div class="metric-lbl">Original Rows</div></div>
+      <div class="metric-box"><div class="metric-val">${data.clean_rows}</div><div class="metric-lbl">Clean Rows</div></div>
+      <div class="metric-box"><div class="metric-val">${data.total_removed}</div><div class="metric-lbl">Removed Diff</div></div>
+      <div class="metric-box"><div class="metric-val">${data.quality_score}%</div><div class="metric-lbl">Quality Index</div></div>
+    </div>
+
+    <div class="timeline-log" style="margin-top:14px;">
+      ${(data.steps || []).map(s => `
+        <div class="timeline-item">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" style="color:var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <div>${s.msg}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- Download Bar Below Report -->
+    <div style="margin-top:16px; padding:14px 18px; background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="font-weight:600; font-size:0.88rem; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+        <svg class="icon" viewBox="0 0 24 24" style="color:var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Cleaned File Ready: <strong>cleaned_${sessInfo.filename}</strong></span>
+      </div>
+      <a class="btn btn-primary" href="${API_BASE}/clean/${sessInfo.sessionId}/download" download style="padding:8px 16px; font-size:0.85rem; display:inline-flex; align-items:center; gap:6px;">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="15" x2="12" y2="15"></line></svg>
+        Download Cleaned Dataset (${fileExt.toUpperCase()})
+      </a>
+    </div>
+  `;
 }
 
 // --- Item 4: Model Upload Handler (.py, .js, .pkl, .html) ---
