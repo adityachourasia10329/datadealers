@@ -1,0 +1,13 @@
+order_id,product_category,unit_price,quantity_sold,discount_percent,shipping_cost,payment_method,total_revenue
+ORD_501,Electronics,299.99,2,0.10,15.00,Credit Card,554.98
+ORD_502,Apparel,45.00,4,0.05,5.00,PayPal,176.00
+ORD_503,Home & Kitchen,120.00,1,0.00,10.00,Credit Card,130.00
+ORD_504,Electronics,899.00,1,0.15,25.00,Debit Card,789.15
+ORD_505,Books,15.99,3,0.00,3.99,Credit Card,51.96
+ORD_506,Apparel,85.00,2,0.20,6.00,PayPal,142.00
+ORD_507,Home & Kitchen,49.99,5,0.10,12.00,Credit Card,236.95
+ORD_508,Electronics,149.50,2,0.05,8.00,Credit Card,292.05
+ORD_509,Beauty & Care,25.00,3,0.00,4.50,Debit Card,79.50
+ORD_510,Sports & Outdoors,199.00,1,0.10,15.00,Credit Card,194.10
+ORD_511,Apparel,65.00,3,0.15,6.00,PayPal,171.75
+ORD_512,Electronics,450.00,1,0.05,18.00,Credit Card,445.50

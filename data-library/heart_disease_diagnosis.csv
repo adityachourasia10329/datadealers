@@ -1,0 +1,16 @@
+patient_id,age,sex,chest_pain_type,resting_bp,cholesterol,fasting_bs,max_hr,exercise_angina,target_disease
+PAT_401,63,Male,Typical,145,233,1,150,No,Presence
+PAT_402,37,Male,Non-Anginal,130,250,0,187,No,Absence
+PAT_403,41,Female,Atypical,130,204,0,172,No,Absence
+PAT_404,56,Male,Atypical,120,236,0,178,No,Absence
+PAT_405,57,Female,Asymptomatic,120,354,0,163,Yes,Absence
+PAT_406,57,Male,Asymptomatic,140,192,0,148,No,Presence
+PAT_407,56,Female,Atypical,140,294,0,153,No,Absence
+PAT_408,44,Male,Atypical,120,263,0,173,No,Absence
+PAT_409,52,Male,Typical,172,199,1,162,No,Presence
+PAT_410,57,Male,Typical,150,168,0,174,No,Presence
+PAT_411,54,Male,Asymptomatic,140,239,0,160,No,Presence
+PAT_412,48,Female,Atypical,130,275,0,139,No,Absence
+PAT_413,49,Male,Atypical,130,266,0,171,No,Absence
+PAT_414,64,Male,Asymptomatic,128,263,0,105,Yes,Presence
+PAT_415,58,Female,Atypical,120,240,0,154,No,Absence

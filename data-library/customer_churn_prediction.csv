@@ -1,0 +1,21 @@
+customer_id,gender,tenure_months,monthly_charges,total_charges,contract_type,internet_service,churn
+CUST_1001,Female,12,65.50,786.00,Month-to-Month,Fiber Optic,Yes
+CUST_1002,Male,34,55.20,1876.80,One Year,DSL,No
+CUST_1003,Male,2,20.15,40.30,Month-to-Month,None,Yes
+CUST_1004,Female,45,89.90,4045.50,Two Year,Fiber Optic,No
+CUST_1005,Male,8,75.30,602.40,Month-to-Month,Fiber Optic,Yes
+CUST_1006,Female,60,105.00,6300.00,Two Year,Fiber Optic,No
+CUST_1007,Male,19,40.10,761.90,One Year,DSL,No
+CUST_1008,Female,3,95.40,286.20,Month-to-Month,Fiber Optic,Yes
+CUST_1009,Male,72,115.80,8337.60,Two Year,Fiber Optic,No
+CUST_1010,Female,24,50.60,1214.40,One Year,DSL,No
+CUST_1011,Male,5,80.20,401.00,Month-to-Month,Fiber Optic,Yes
+CUST_1012,Female,50,65.00,3250.00,Two Year,DSL,No
+CUST_1013,Male,14,25.40,355.60,Month-to-Month,None,No
+CUST_1014,Female,1,70.10,70.10,Month-to-Month,Fiber Optic,Yes
+CUST_1015,Male,38,98.50,3743.00,One Year,Fiber Optic,No
+CUST_1016,Female,68,110.20,7493.60,Two Year,Fiber Optic,No
+CUST_1017,Male,9,45.80,412.20,Month-to-Month,DSL,Yes
+CUST_1018,Female,29,85.00,2465.00,One Year,Fiber Optic,No
+CUST_1019,Male,4,19.80,79.20,Month-to-Month,None,Yes
+CUST_1020,Female,62,102.50,6355.00,Two Year,Fiber Optic,No

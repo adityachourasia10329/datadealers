@@ -1,0 +1,16 @@
+student_id,study_hours_per_week,attendance_percentage,sleep_hours_per_night,tutoring_sessions,previous_exam_score,final_exam_score,passed
+STU_301,15.5,92.0,7.5,2,82,85,Pass
+STU_302,8.0,75.5,6.0,0,60,58,Fail
+STU_303,22.0,98.0,8.0,4,91,95,Pass
+STU_304,6.5,65.0,5.5,0,52,48,Fail
+STU_305,12.0,85.0,7.0,1,74,76,Pass
+STU_306,18.0,94.0,8.0,3,88,90,Pass
+STU_307,9.5,80.0,6.5,1,65,68,Pass
+STU_308,4.0,55.0,5.0,0,45,42,Fail
+STU_309,25.0,100.0,8.5,5,95,98,Pass
+STU_3010,14.0,88.0,7.0,2,78,81,Pass
+STU_3011,7.0,70.0,6.0,0,58,55,Fail
+STU_3012,20.0,96.0,7.5,3,90,92,Pass
+STU_3013,11.0,82.0,6.5,1,70,72,Pass
+STU_3014,5.0,60.0,5.5,0,48,45,Fail
+STU_3015,16.5,91.0,7.5,2,84,87,Pass
