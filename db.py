@@ -92,7 +92,7 @@ def create_user(name, email, password, downloads_allowed=1):
 def verify_user(email, password):
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE email = ?", (email.strip().lower(),))
+    cursor.execute("SELECT * FROM users WHERE LOWER(TRIM(email)) = LOWER(TRIM(?))", (email,))
     row = cursor.fetchone()
     conn.close()
     if row and check_password_hash(row["password_hash"], password):

@@ -553,7 +553,7 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
 
         <!-- Pre-signup permission consent step -->
         <div class="consent-step" id="consentStep" style="display:none;">
-          <input type="checkbox" id="consentDownload" required>
+          <input type="checkbox" id="consentDownload">
           <label for="consentDownload">Allow dataset file downloads to your local device for dataset supply feature.</label>
         </div>
 
@@ -1019,8 +1019,9 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
 <!-- ═══════════════════════════════════════════════════════════════════
    JAVASCRIPT LOGIC
 ═══════════════════════════════════════════════════════════════════ -->
-<script>
-const API_BASE = 'https://datadealers.onrender.com';
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
+  ? 'http://127.0.0.1:5000'
+  : 'https://datadealers.onrender.com';
 let activeUser = null;
 let currentSessionId = null;
 let currentProblemDesc = '';
@@ -1068,6 +1069,8 @@ function switchAuthTab(tab) {
   document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
   document.getElementById('groupName').style.display = tab === 'signup' ? 'block' : 'none';
   document.getElementById('consentStep').style.display = tab === 'signup' ? 'flex' : 'none';
+  const consentCb = document.getElementById('consentDownload');
+  if (consentCb) consentCb.required = (tab === 'signup');
   document.getElementById('authSubmitBtn').textContent = tab === 'signup' ? 'Create Account →' : 'Log In →';
 }
 
@@ -1082,6 +1085,11 @@ async function handleAuth(e) {
   errEl.style.display = 'none';
 
   const endpoint = isSignup ? '/signup' : '/login';
+  if (isSignup && !document.getElementById('consentDownload').checked) {
+    errEl.textContent = 'Please allow dataset file downloads to create an account.';
+    errEl.style.display = 'block';
+    return;
+  }
   const payload = isSignup ? { name, email, password, downloads_allowed: document.getElementById('consentDownload').checked } : { email, password };
 
   try {
