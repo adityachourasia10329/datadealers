@@ -1019,9 +1019,7 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
 <!-- ═══════════════════════════════════════════════════════════════════
    JAVASCRIPT LOGIC
 ═══════════════════════════════════════════════════════════════════ -->
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
-  ? 'http://127.0.0.1:5000'
-  : 'https://datadealers.onrender.com';
+const API_BASE = 'https://datadealers.onrender.com';
 let activeUser = null;
 let currentSessionId = null;
 let currentProblemDesc = '';
@@ -1069,8 +1067,12 @@ function switchAuthTab(tab) {
   document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
   document.getElementById('groupName').style.display = tab === 'signup' ? 'block' : 'none';
   document.getElementById('consentStep').style.display = tab === 'signup' ? 'flex' : 'none';
+  
+  const nameInput = document.getElementById('authName');
   const consentCb = document.getElementById('consentDownload');
+  if (nameInput) nameInput.required = (tab === 'signup');
   if (consentCb) consentCb.required = (tab === 'signup');
+  
   document.getElementById('authSubmitBtn').textContent = tab === 'signup' ? 'Create Account →' : 'Log In →';
 }
 
@@ -1078,19 +1080,32 @@ function switchAuthTab(tab) {
 async function handleAuth(e) {
   e.preventDefault();
   const isSignup = document.getElementById('tabSignup').classList.contains('active');
-  const email = document.getElementById('authEmail').value;
+  const email = (document.getElementById('authEmail').value || '').trim();
   const password = document.getElementById('authPassword').value;
-  const name = document.getElementById('authName').value;
+  const name = (document.getElementById('authName').value || '').trim();
   const errEl = document.getElementById('authError');
+  const submitBtn = document.getElementById('authSubmitBtn');
   errEl.style.display = 'none';
 
-  const endpoint = isSignup ? '/signup' : '/login';
-  if (isSignup && !document.getElementById('consentDownload').checked) {
-    errEl.textContent = 'Please allow dataset file downloads to create an account.';
-    errEl.style.display = 'block';
-    return;
+  if (isSignup) {
+    if (!name) {
+      errEl.textContent = 'Please enter your full name.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!document.getElementById('consentDownload').checked) {
+      errEl.textContent = 'Please allow dataset file downloads to create an account.';
+      errEl.style.display = 'block';
+      return;
+    }
   }
+
+  const endpoint = isSignup ? '/signup' : '/login';
   const payload = isSignup ? { name, email, password, downloads_allowed: document.getElementById('consentDownload').checked } : { email, password };
+
+  const originalBtnText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = isSignup ? 'Creating Account...' : 'Logging in...';
 
   try {
     const res = await fetch(API_BASE + endpoint, {
@@ -1107,13 +1122,16 @@ async function handleAuth(e) {
     }
 
     // Success
-    activeUser = data.name;
-    document.getElementById('userAvatar').textContent = activeUser.charAt(0).toUpperCase();
+    activeUser = data.name || email.split('@')[0] || 'User';
+    const avatarEl = document.getElementById('userAvatar');
+    if (avatarEl) avatarEl.textContent = activeUser.charAt(0).toUpperCase();
 
     // Render DB Quote on Entry
     if (data.quote) {
-      document.getElementById('entryQuote').childNodes[0].nodeValue = `"${data.quote.text}" `;
-      document.getElementById('entryQuoteAuthor').textContent = `— ${data.quote.author}`;
+      const quoteEl = document.getElementById('entryQuote');
+      if (quoteEl && quoteEl.childNodes[0]) quoteEl.childNodes[0].nodeValue = `"${data.quote.text}" `;
+      const authorEl = document.getElementById('entryQuoteAuthor');
+      if (authorEl) authorEl.textContent = `— ${data.quote.author}`;
     }
 
     // Show App Shell
@@ -1121,7 +1139,12 @@ async function handleAuth(e) {
     document.getElementById('app-shell').classList.add('active');
     loadDatasets();
   } catch (err) {
-    showOfflineState();
+    console.error('Auth error:', err);
+    errEl.textContent = 'Unable to reach backend server. Please verify network connection or try again in a few seconds.';
+    errEl.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
   }
 }
 
@@ -1547,12 +1570,12 @@ function showOfflineState() {
 
 async function checkBackendConnection() {
   try {
-    const res = await fetch(API_BASE + '/', { signal: AbortSignal.timeout(3000) });
+    const res = await fetch(API_BASE + '/', { signal: AbortSignal.timeout(20000) });
     if (res.ok) {
       document.getElementById('offline-overlay').classList.remove('active');
     }
   } catch (e) {
-    // Keep overlay active
+    // Keep overlay active if server unreachable after timeout
   }
 }
 
