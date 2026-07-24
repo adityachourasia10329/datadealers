@@ -874,12 +874,7 @@ def test_model():
 #  CURATED DATASETS & DOWNLOADS (Admin & Library)
 # ─────────────────────────────────────────────
 def _toy_datasets():
-    return {
-        'iris_flowers.csv': (load_iris, 'Classification', 'Classic multi-class dataset of iris flower measurements.'),
-        'wine_quality.csv': (load_wine, 'Classification', 'Chemical analysis measurements of Italian wine variants.'),
-        'breast_cancer.csv': (load_breast_cancer, 'Classification', 'Diagnostic features from digitized breast mass images.'),
-        'diabetes_progression.csv': (load_diabetes, 'Regression', 'Baseline clinical variables for disease progression modeling.'),
-    }
+    return {}
 
 
 def _scan_data_library():

@@ -1742,7 +1742,7 @@ async function loadDatasets() {
 function renderDatasetList(list) {
   const container = document.getElementById('datasetListContainer');
   if (!list.length) {
-    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:30px;">No datasets match your search query.</div>';
+    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:32px; background:var(--bg-card); border:1px dashed var(--border-color); border-radius:var(--radius-lg);">No datasets currently in supply library. Use "+ Admin: Add New Dataset to Curated Supply Library" above to add new datasets.</div>';
     return;
   }
   container.innerHTML = list.map(d => `
