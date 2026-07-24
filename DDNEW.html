@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DataDealers — Professional Data Science Platform</title>
+
+<!-- Fonts: Inter Tight (Headings), Inter (Body), IBM Plex Mono (Data/Logs), Syne (4th Expressive Brand Display Font) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:ital,wght@0,500;0,600;0,700;0,800;1,700&family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   DATA DEALERS DESIGN SYSTEM — Kaggle x Zerodha Professional Theme
+   With Purposeful Accents (Yellow Warnings, Purple AI Guidance) & Syne Display Font
+═══════════════════════════════════════════════════════════════════ */
+:root {
+  /* Light Theme Palette (Default) */
+  --bg-main:       #F8F9FA;
+  --bg-card:       #FFFFFF;
+  --bg-subtle:     #F1F3F5;
+  --border-color:  #E2E8F0;
+  --border-hover:  #CBD5E1;
+  
+  --text-main:     #0F172A;
+  --text-muted:    #64748B;
+  --text-inverse:  #FFFFFF;
+  
+  --accent-primary:#0F62FE;
+  --accent-hover:  #0043CE;
+  --accent-subtle: #EDF5FF;
+
+  /* Secondary Accents */
+  --accent-yellow:       #D97706;
+  --accent-yellow-bg:    #FFFBEB;
+  --accent-yellow-border:#FCD34D;
+
+  --accent-purple:       #7C3AED;
+  --accent-purple-bg:    #F5F3FF;
+  --accent-purple-border:#DDD6FE;
+  
+  --success:       #059669;
+  --success-bg:    #ECFDF5;
+  --warning:       #D97706;
+  --warning-bg:    #FFFBEB;
+  --danger:        #DC2626;
+  --danger-bg:     #FEF2F2;
+
+  --font-heading:  'Inter Tight', -apple-system, sans-serif;
+  --font-body:     'Inter', -apple-system, sans-serif;
+  --font-mono:     'IBM Plex Mono', monospace;
+  --font-display:  'Syne', 'Inter Tight', sans-serif;
+  
+  --shadow-sm:     0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md:     0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --radius-sm:     6px;
+  --radius-md:     10px;
+  --radius-lg:     16px;
+  
+  --sidebar-width: 240px;
+  --sidebar-collapsed: 64px;
+}
+
+[data-theme="dark"] {
+  /* Neutral Professional Dark Theme Palette */
+  --bg-main:       #121212;
+  --bg-card:       #1E1E1E;
+  --bg-subtle:     #282828;
+  --border-color:  #2E2E2E;
+  --border-hover:  #404040;
+  
+  --text-main:     #F1F5F9;
+  --text-muted:    #94A3B8;
+  --text-inverse:  #0F172A;
+  
+  --accent-primary:#3B82F6;
+  --accent-hover:  #2563EB;
+  --accent-subtle: #1E293B;
+
+  /* Secondary Accents Dark */
+  --accent-yellow:       #F59E0B;
+  --accent-yellow-bg:    #451A03;
+  --accent-yellow-border:#92400E;
+
+  --accent-purple:       #A78BFA;
+  --accent-purple-bg:    #2E1065;
+  --accent-purple-border:#5B21B6;
+  
+  --success:       #10B981;
+  --success-bg:    #064E3B;
+  --warning:       #F59E0B;
+  --warning-bg:    #78350F;
+  --danger:        #EF4444;
+  --danger-bg:     #7F1D1D;
+  
+  --shadow-sm:     none;
+  --shadow-md:     0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Reset & Global */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; font-family: var(--font-body); background: var(--bg-main); color: var(--text-main); font-size: 14px; line-height: 1.5; }
+
+button, input, select, textarea { font-family: inherit; color: inherit; }
+
+/* SVG Icon Helper */
+.icon { width: 18px; height: 18px; stroke-width: 2; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
+.icon-sm { width: 14px; height: 14px; }
+.icon-lg { width: 22px; height: 22px; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   1. MINIMAL ENTRY SCREEN (AUTH GATE)
+═══════════════════════════════════════════════════════════════════ */
+#entry-screen {
+  position: fixed; inset: 0; z-index: 1000;
+  background: var(--bg-main);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.entry-container {
+  width: 100%; max-width: 420px; text-align: center;
+}
+.entry-wordmark {
+  font-family: var(--font-display); font-size: 2.8rem; font-weight: 800; letter-spacing: -0.03em;
+  color: var(--text-main); margin-bottom: 8px;
+}
+.entry-wordmark span { color: var(--accent-primary); }
+
+/* Plain text quote directly beneath wordmark */
+.entry-quote {
+  font-size: 0.9rem; font-style: italic; color: var(--text-main);
+  max-width: 360px; margin: 0 auto 32px auto; line-height: 1.6;
+}
+.entry-quote-author {
+  font-style: normal; font-weight: 600; font-size: 0.8rem; margin-top: 4px; display: block;
+}
+
+/* Auth Card */
+.auth-box {
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 28px 24px; text-align: left;
+  box-shadow: var(--shadow-md);
+}
+.auth-tabs {
+  display: flex; background: var(--bg-subtle); border-radius: var(--radius-md); padding: 3px; margin-bottom: 20px;
+}
+.auth-tab {
+  flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-muted);
+  font-weight: 600; font-size: 0.85rem; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s;
+}
+.auth-tab.active {
+  background: var(--bg-card); color: var(--text-main); box-shadow: var(--shadow-sm);
+}
+
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 6px; }
+.form-input {
+  width: 100%; padding: 11px 14px; background: var(--bg-main); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); color: var(--text-main); font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--accent-primary); }
+
+.consent-step {
+  display: flex; align-items: flex-start; gap: 10px; margin: 16px 0; padding: 12px;
+  background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px solid var(--border-color);
+  font-size: 0.8rem; color: var(--text-muted);
+}
+.consent-step input { margin-top: 3px; cursor: pointer; accent-color: var(--accent-primary); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 20px; border-radius: var(--radius-md); font-weight: 600; font-size: 0.88rem;
+  border: 1px solid transparent; cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-primary { background: var(--accent-primary); color: var(--text-inverse); }
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+.btn-secondary { background: var(--bg-card); border-color: var(--border-color); color: var(--text-main); }
+.btn-secondary:hover:not(:disabled) { border-color: var(--border-hover); background: var(--bg-subtle); }
+.btn-purple { background: var(--accent-purple); color: #FFFFFF; }
+.btn-purple:hover:not(:disabled) { opacity: 0.9; }
+.btn-full { width: 100%; }
+
+.auth-error {
+  margin-top: 12px; padding: 10px 12px; background: var(--danger-bg); color: var(--danger);
+  border-radius: var(--radius-sm); font-size: 0.8rem; display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. MAIN APPLICATION SHELL (SIDEBAR + CONTENT)
+═══════════════════════════════════════════════════════════════════ */
+#app-shell {
+  display: none; height: 100vh; overflow: hidden;
+}
+#app-shell.active { display: flex; }
+
+/* Left Sidebar Navigation */
+.sidebar {
+  width: var(--sidebar-width); background: var(--bg-card); border-right: 1px solid var(--border-color);
+  display: flex; flex-direction: column; flex-shrink: 0; transition: width 0.25s ease;
+  position: relative; z-index: 50;
+}
+.sidebar.collapsed { width: var(--sidebar-collapsed); }
+
+.sidebar-header {
+  height: 60px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+}
+.sidebar-logo {
+  font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; color: var(--text-main);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px;
+}
+.sidebar-logo span { color: var(--accent-primary); }
+.sidebar-toggle {
+  background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 6px;
+  border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
+}
+.sidebar-toggle:hover { color: var(--text-main); background: var(--bg-subtle); }
+
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 16px 10px; }
+
+/* Navigation Group */
+.nav-group { margin-bottom: 18px; }
+.nav-group-label {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-muted); padding: 0 10px 8px 10px; white-space: nowrap; overflow: hidden;
+}
+.sidebar.collapsed .nav-group-label { display: none !important; }
+
+.nav-item {
+  position: relative; margin-bottom: 2px;
+}
+.nav-link {
+  display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--radius-md);
+  color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 0.88rem;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap; width: 100%;
+}
+.nav-link:hover { color: var(--text-main); background: var(--bg-subtle); }
+.nav-link.active { color: var(--accent-primary); background: var(--accent-subtle); font-weight: 600; }
+.nav-link .nav-arrow { margin-left: auto; transition: transform 0.2s; }
+.nav-item.open .nav-arrow { transform: rotate(90deg); }
+
+/* Collapsed Sidebar Alignment Fix: Icons aligned to right side of 64px column */
+.sidebar.collapsed .nav-link {
+  justify-content: flex-end;
+  padding-right: 18px;
+  padding-left: 0;
+}
+.sidebar.collapsed .nav-link span,
+.sidebar.collapsed .nav-link .nav-arrow {
+  display: none !important;
+}
+.sidebar.collapsed .sidebar-header {
+  justify-content: flex-end;
+  padding-right: 14px;
+  padding-left: 10px;
+}
+.sidebar.collapsed .sidebar-logo span {
+  display: none !important;
+}
+
+/* Submenu Flyout / Accordion */
+.nav-submenu {
+  display: none; padding-left: 28px; margin-top: 2px;
+}
+.nav-item.open .nav-submenu { display: block; }
+.sidebar.collapsed .nav-submenu {
+  position: absolute; left: 100%; top: 0; background: var(--bg-card); border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md); border-radius: var(--radius-md); padding: 8px; width: 180px; z-index: 100;
+  display: none;
+}
+.sidebar.collapsed .nav-item:hover .nav-submenu { display: block; }
+
+.submenu-link {
+  display: block; padding: 7px 10px; font-size: 0.82rem; color: var(--text-muted);
+  text-decoration: none; border-radius: var(--radius-sm); transition: all 0.15s; cursor: pointer;
+}
+.submenu-link:hover, .submenu-link.active { color: var(--accent-primary); background: var(--bg-subtle); font-weight: 600; }
+
+/* Top Header Bar & Clickable Breadcrumb */
+.main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.top-header {
+  height: 60px; background: var(--bg-card); border-bottom: 1px solid var(--border-color);
+  padding: 0 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.breadcrumb { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+.breadcrumb a.breadcrumb-brand, .breadcrumb a.breadcrumb-link {
+  color: var(--text-muted); font-weight: 600; text-decoration: none; cursor: pointer; transition: color 0.15s;
+}
+.breadcrumb a.breadcrumb-brand:hover, .breadcrumb a.breadcrumb-link:hover { color: var(--accent-primary); }
+.breadcrumb span.current { color: var(--text-main); font-weight: 600; }
+
+.header-right { display: flex; align-items: center; gap: 12px; }
+
+/* Theme Toggle Button */
+.theme-btn {
+  background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+  padding: 7px 11px; cursor: pointer; color: var(--text-main); display: flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; font-weight: 500;
+}
+.theme-btn:hover { border-color: var(--border-hover); }
+
+/* About Pill Button */
+.about-pill {
+  background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 20px;
+  padding: 6px 14px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);
+  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+}
+.about-pill:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--accent-primary);
+  color: var(--text-inverse); display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.85rem;
+}
+
+/* Page Scroll Area */
+.page-container { flex: 1; overflow-y: auto; padding: 28px 32px; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. PAGE VIEWS & LEAF ROUTES
+═══════════════════════════════════════════════════════════════════ */
+.view-page { display: none; max-width: 1080px; margin: 0 auto; }
+.view-page.active { display: block; }
+
+.page-header { margin-bottom: 20px; }
+.page-title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text-main); }
+.page-subtitle { color: var(--text-muted); font-size: 0.88rem; margin-top: 4px; line-height: 1.5; }
+
+/* Collapsible How-It-Works Component */
+details.how-it-works {
+  background: var(--bg-subtle); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 20px; font-size: 0.85rem;
+}
+details.how-it-works summary {
+  font-weight: 600; color: var(--accent-primary); cursor: pointer; outline: none;
+  display: flex; align-items: center; gap: 6px; user-select: none;
+}
+details.how-it-works summary:hover { color: var(--accent-hover); }
+details.how-it-works .step-list {
+  margin: 10px 0 4px 20px; color: var(--text-main); line-height: 1.6;
+}
+details.how-it-works .step-list li { margin-bottom: 4px; }
+
+/* Cards & Layout Grid */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-sm);
+}
+.card-header { font-family: var(--font-heading); font-weight: 700; font-size: 0.95rem; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+
+/* Empty States */
+.empty-state-card {
+  text-align: center; padding: 36px 20px; background: var(--bg-subtle);
+  border: 1px dashed var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px;
+}
+.empty-state-title { font-weight: 700; font-size: 1rem; color: var(--text-main); margin-bottom: 6px; }
+.empty-state-desc { font-size: 0.85rem; color: var(--text-muted); max-width: 440px; margin: 0 auto 16px auto; line-height: 1.5; }
+
+/* Model Upload Box (Centered horizontally and vertically) */
+.model-upload-box {
+  border: 2px dashed var(--border-color); border-radius: var(--radius-lg);
+  background: var(--bg-main); padding: 28px 20px; margin-bottom: 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; min-height: 140px; cursor: pointer; transition: all 0.2s ease;
+  position: relative;
+}
+.model-upload-box:hover {
+  border-color: var(--accent-primary); background: var(--bg-subtle);
+}
+.model-upload-text {
+  font-size: 0.88rem; font-weight: 600; color: var(--text-muted); margin: 0; pointer-events: none;
+}
+.model-upload-box .icon-upload {
+  width: 26px; height: 26px; color: var(--accent-primary); margin-bottom: 8px; pointer-events: none;
+}
+.uploaded-model-tag {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; font-family: var(--font-mono);
+  background: var(--success-bg); color: var(--success); padding: 4px 10px; border-radius: var(--radius-sm); margin-top: 8px;
+}
+
+/* Describe Page */
+.describe-box {
+  width: 100%; min-height: 180px; padding: 14px; background: var(--bg-main);
+  border: 1px solid var(--border-color); border-radius: var(--radius-md);
+  font-size: 0.92rem; line-height: 1.6; outline: none; resize: vertical; transition: border-color 0.2s;
+}
+.describe-box:focus { border-color: var(--accent-primary); }
+.word-counter { text-align: right; font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-muted); margin-top: 6px; }
+
+/* Model Guidance & Purple Accent Styling */
+.guidance-banner {
+  background: var(--accent-purple-bg); border: 1px solid var(--accent-purple-border);
+  border-radius: var(--radius-lg); padding: 20px; margin-bottom: 20px;
+}
+.guidance-text { font-size: 0.92rem; line-height: 1.7; color: var(--text-main); }
+.guidance-header-title { font-weight: 700; font-size: 1rem; color: var(--accent-purple); display: flex; align-items: center; gap: 8px; }
+
+/* Interactive Inline Glossary Terms */
+.glossary-term {
+  border-bottom: 1.5px dotted var(--accent-purple); cursor: help; position: relative; font-weight: 500;
+}
+.glossary-tooltip {
+  position: absolute; left: 50%; transform: translateX(-50%); bottom: 120%; width: 240px; background: var(--bg-card);
+  border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px;
+  box-shadow: var(--shadow-md); font-size: 0.78rem; color: var(--text-main); font-weight: normal;
+  z-index: 200; display: none; opacity: 0; transition: opacity 0.2s; pointer-events: none;
+}
+.glossary-term:hover .glossary-tooltip, .glossary-term:focus .glossary-tooltip { display: block; opacity: 1; }
+.glossary-tooltip strong { display: block; margin-bottom: 4px; color: var(--accent-purple); font-size: 0.8rem; }
+
+/* Model Cards Grid & Top Pick Purple Accent */
+.model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 20px; }
+.model-card {
+  background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+  padding: 18px; position: relative; transition: all 0.2s;
+}
+.model-card.top-pick { border-color: var(--accent-purple); }
+.top-badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  background: var(--accent-purple-bg); color: var(--accent-purple); padding: 3px 8px; border-radius: 4px; margin-bottom: 8px;
+}
+.model-title { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+.model-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; }
+.model-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.model-tag { font-size: 0.7rem; font-family: var(--font-mono); background: var(--bg-subtle); padding: 2px 6px; border-radius: 4px; color: var(--text-muted); }
+
+/* Yellow Warning Accent Styles */
+.family-mismatch-banner {
+  padding: 10px 14px; background: var(--accent-yellow-bg); color: var(--accent-yellow);
+  border: 1px solid var(--accent-yellow-border); border-radius: var(--radius-md); margin-bottom: 12px; font-weight: 600; font-size: 0.85rem;
+}
+
+/* Dataset Supply Split-Bar Layout */
+.ds-row {
+  display: flex; align-items: center; justify-content: space-between; padding: 14px 18px;
+  background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+  margin-bottom: 10px; transition: border-color 0.2s;
+}
+.ds-row:hover { border-color: var(--border-hover); }
+.ds-info { display: flex; align-items: center; gap: 14px; }
+.ds-name { font-weight: 600; font-size: 0.9rem; }
+.ds-meta { font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+/* Timeline Log for Cleaning */
+.timeline-log { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.timeline-item {
+  display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: var(--bg-subtle);
+  border-radius: var(--radius-md); font-size: 0.85rem; border-left: 3px solid var(--accent-primary);
+}
+
+/* Metrics Box */
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.metric-box {
+  background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+  padding: 16px; text-align: center;
+}
+.metric-val { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--accent-primary); }
+.metric-lbl { font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+
+/* Log Console */
+.log-console {
+  background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+  padding: 14px; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.8;
+  max-height: 220px; overflow-y: auto; color: var(--text-muted);
+}
+
+/* Spinner helper */
+.spinner {
+  width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent;
+  border-radius: 50%; animation: spin 0.75s linear infinite; display: inline-block; vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. OFFLINE / DISCONNECTED STATE (CUSTOM ANIMATED OUTLINE)
+═══════════════════════════════════════════════════════════════════ */
+#offline-overlay {
+  position: fixed; inset: 0; z-index: 2000; background: var(--bg-main);
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 24px;
+}
+#offline-overlay.active { display: flex; }
+
+/* Bold Italic Stroke Outline Animated Text using 4th Font Syne */
+.outline-wordmark {
+  font-family: var(--font-display); font-size: 3.5rem; font-weight: 800; font-style: italic;
+  letter-spacing: -0.03em; color: transparent;
+  -webkit-text-stroke: 2px var(--accent-primary);
+  animation: pulse-stroke 2s ease-in-out infinite alternate;
+  margin-bottom: 16px;
+}
+
+@keyframes pulse-stroke {
+  0% { opacity: 0.3; -webkit-text-stroke-color: var(--text-muted); }
+  100% { opacity: 1; -webkit-text-stroke-color: var(--accent-primary); }
+}
+
+.offline-msg { font-size: 0.95rem; color: var(--text-muted); max-width: 320px; margin-bottom: 20px; }
+
+/* Modal Box for About */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 1500;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-backdrop.active { display: flex; }
+.modal-card {
+  background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  width: 100%; max-width: 480px; padding: 24px; box-shadow: var(--shadow-md);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+   1. ENTRY SCREEN (MINIMAL AUTH GATE)
+═══════════════════════════════════════════════════════════════════ -->
+<div id="entry-screen">
+  <div class="entry-container">
+    <div class="entry-wordmark">Data<span>Dealers</span></div>
+    
+    <!-- Plain text quote directly beneath wordmark -->
+    <div class="entry-quote" id="entryQuote">
+      "No man ever steps in the same river twice, for it's not the same river and he's not the same man."
+      <span class="entry-quote-author" id="entryQuoteAuthor">— Heraclitus</span>
+    </div>
+
+    <!-- Auth Tabs & Form -->
+    <div class="auth-box">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Log In</button>
+        <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
+      </div>
+
+      <form id="authForm" onsubmit="handleAuth(event)">
+        <div class="form-group" id="groupName" style="display:none;">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="authName" placeholder="e.g. Alex Mercer">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="authEmail" required placeholder="name@company.com">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="authPassword" required placeholder="••••••••">
+        </div>
+
+        <!-- Pre-signup permission consent step -->
+        <div class="consent-step" id="consentStep" style="display:none;">
+          <input type="checkbox" id="consentDownload" checked>
+          <label for="consentDownload">Allow dataset file downloads to your local device for dataset supply feature.</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full" id="authSubmitBtn">Log In →</button>
+        <div class="auth-error" id="authError"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+   2. MAIN APPLICATION SHELL
+═══════════════════════════════════════════════════════════════════ -->
+<div id="app-shell">
+
+  <!-- Persistent Collapsible Sidebar Navigation -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        <span>DataDealers</span>
+      </div>
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle Sidebar">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+      <!-- Top Group: Core Navigation -->
+      <div class="nav-group">
+        <div class="nav-group-label">Overview</div>
+        <div class="nav-item">
+          <a class="nav-link active" id="nav-describe" onclick="navigateTo('describe')">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span>Describe Problem</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a class="nav-link" id="nav-guidance" onclick="navigateTo('guidance')">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <span>Model Guidance</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Data Works Submenu -->
+      <div class="nav-group">
+        <div class="nav-group-label">Data Works</div>
+        <div class="nav-item" id="item-data-works">
+          <div class="nav-link" onclick="toggleSubmenu('item-data-works')">
+            <svg class="icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+            <span>Data Works</span>
+            <svg class="icon icon-sm nav-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+          <div class="nav-submenu">
+            <a class="submenu-link" id="nav-cleaning" onclick="navigateTo('cleaning')">Dataset Cleaning</a>
+            <a class="submenu-link" id="nav-datasets" onclick="navigateTo('datasets')">Dataset Supply</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Model Works Submenu -->
+      <div class="nav-group">
+        <div class="nav-group-label">Model Works</div>
+        <div class="nav-item" id="item-model-works">
+          <div class="nav-link" onclick="toggleSubmenu('item-model-works')">
+            <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <span>Model Works</span>
+            <svg class="icon icon-sm nav-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+          <div class="nav-submenu">
+            <a class="submenu-link" id="nav-test" onclick="navigateTo('test')">Testing Framework</a>
+            <a class="submenu-link" id="nav-training" onclick="navigateTo('training')">Training Framework</a>
+          </div>
+        </div>
+      </div>
+
+    </nav>
+  </aside>
+
+  <!-- Main Work Area -->
+  <div class="main-content">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <div class="breadcrumb" id="breadcrumbTrail">
+          <a class="breadcrumb-brand" onclick="navigateTo('describe')">DataDealers</a> / <span class="current" id="currentBreadcrumb">Describe</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Theme Toggle Button -->
+        <button class="theme-btn" onclick="toggleTheme()" id="themeToggleBtn">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <span id="themeLabel">Dark</span>
+        </button>
+
+        <!-- About Pill Button -->
+        <button class="about-pill" onclick="openAboutModal()">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          About
+        </button>
+
+        <!-- Profile Avatar -->
+        <div class="user-avatar" id="userAvatar">A</div>
+      </div>
+    </header>
+
+    <!-- Page Content Router -->
+    <div class="page-container">
+
+      <!-- 1. DESCRIBE PAGE -->
+      <div class="view-page active" id="page-describe">
+        <div class="page-header">
+          <h1 class="page-title">Describe Your Problem</h1>
+          <p class="page-subtitle">Enter your machine learning problem or dataset goals below and click 'Analyze & Recommend' to generate server-side Gemini AI model suggestions.</p>
+        </div>
+
+        <details class="how-it-works">
+          <summary><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> How this works</summary>
+          <ol class="step-list">
+            <li>Type or paste your project goal or problem description in plain text (up to 750 words).</li>
+            <li>Click <strong>"Analyze & Recommend"</strong> to send your problem statement to backend Gemini AI.</li>
+            <li>You will automatically navigate to Model Guidance to review recommended model algorithms.</li>
+          </ol>
+        </details>
+
+        <div style="display:flex; gap:20px; align-items:flex-start; margin-bottom:20px;">
+          <div style="flex:1;">
+            <div class="card">
+              <div class="card-header">Problem Statement</div>
+              <textarea class="describe-box" id="describeInput" oninput="updateWordCount()" placeholder="e.g., I want to predict customer churn for a telecom company based on monthly charges, tenure, and customer service calls. I want to identify high-risk customers early so our retention team can offer incentives."></textarea>
+              <div class="word-counter" id="wordCounter">0 / 750 words</div>
+            </div>
+
+            <div style="display:flex; gap:12px;">
+              <button class="btn btn-primary" onclick="submitDescribe()">Analyze & Recommend →</button>
+            </div>
+          </div>
+
+          <!-- Approachable Line Art Illustration -->
+          <div style="width:220px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; text-align:center;">
+            <svg viewBox="0 0 160 140" style="width:100%; height:auto;">
+              <rect x="20" y="20" width="120" height="90" rx="10" fill="none" stroke="var(--accent-primary)" stroke-width="2.5" stroke-dasharray="4 2" />
+              <circle cx="50" cy="50" r="12" fill="none" stroke="var(--accent-primary)" stroke-width="2.5" />
+              <path d="M50 62 v20 M38 72 h24" stroke="var(--accent-primary)" stroke-width="2.5" stroke-linecap="round" />
+              <circle cx="110" cy="50" r="12" fill="none" stroke="var(--accent-purple)" stroke-width="2.5" />
+              <path d="M110 62 v20 M98 72 h24" stroke="var(--accent-purple)" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M65 50 h30" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 3"/>
+              <polygon points="95 50, 89 47, 89 53" fill="var(--accent-primary)" />
+            </svg>
+            <div style="font-size:0.78rem; font-weight:600; color:var(--text-muted); margin-top:8px;">Describe → AI Analysis</div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 2. MODEL GUIDANCE PAGE -->
+      <div class="view-page" id="page-guidance">
+        <div class="page-header">
+          <h1 class="page-title">Model Guidance</h1>
+          <p class="page-subtitle">Review AI model evaluations and click 'Make this simpler' to ELI5 technical jargon into plain language, or hover terms for definitions.</p>
+        </div>
+
+        <details class="how-it-works">
+          <summary><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> How this works</summary>
+          <ol class="step-list">
+            <li>Review the top recommended machine learning algorithms selected specifically for your problem statement.</li>
+            <li>Click <strong>"Make this simpler"</strong> repeatedly — each click makes the explanation noticeably simpler down to an ELI5 child analogy.</li>
+            <li>Hover over highlighted technical terms (dotted purple underline) for instant glossary definitions.</li>
+          </ol>
+        </details>
+
+        <!-- Empty State Container when no problem described yet -->
+        <div id="guidanceEmptyState" class="empty-state-card" style="display:none;">
+          <div class="empty-state-title">No Problem Description Analyzed Yet</div>
+          <div class="empty-state-desc">Head over to the Describe Problem page, type your machine learning outcome or dataset summary, and click "Analyze & Recommend" to generate personalized guidance.</div>
+          <button class="btn btn-primary" onclick="navigateTo('describe')">Go to Describe Problem →</button>
+        </div>
+
+        <div id="guidanceMainContent">
+          <div class="guidance-banner" id="guidanceBanner">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+              <div class="guidance-header-title">
+                <svg class="icon" viewBox="0 0 24 24" style="color:var(--accent-purple);"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                AI Model Recommendation Summary
+                <span id="simplifyLevelBadge" style="display:none;" class="top-badge">Level 1 Simplicity</span>
+              </div>
+              <button class="btn btn-secondary" id="simplifyBtn" style="padding:5px 12px; font-size:0.78rem;" onclick="requestSimplerExplanation()">Make this simpler</button>
+            </div>
+            <div class="guidance-text" id="guidanceText">Submit a problem description on the Describe page to generate custom AI recommendations.</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span>Recommended Model Family</span>
+              <svg class="icon" viewBox="0 0 24 24" style="color:var(--accent-purple);"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            </div>
+            <div class="model-grid" id="modelGrid">
+              <!-- Dynamic Model Cards -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 3. DATASET CLEANING PAGE -->
+      <div class="view-page" id="page-cleaning">
+        <div class="page-header">
+          <h1 class="page-title">Dataset Cleaning</h1>
+          <p class="page-subtitle">Upload your raw tabular dataset and click 'Run Automated Cleaning' to impute missing values, drop duplicates, and view an audit timeline.</p>
+        </div>
+
+        <details class="how-it-works">
+          <summary><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> How this works</summary>
+          <ol class="step-list">
+            <li>Select a dataset file (.csv, .json, .tsv, .parquet, .txt) from your local system.</li>
+            <li>Click <strong>"Run Automated Cleaning"</strong> to trigger server-side Pandas data quality transforms.</li>
+            <li>Review clean row counts, quality index score, and step-by-step audit logs.</li>
+          </ol>
+        </details>
+
+        <div class="card">
+          <div class="card-header">Upload Dataset for Cleaning</div>
+          <input type="file" id="cleanFileInput" accept=".csv,.json,.tsv,.parquet,.txt" onchange="handleDatasetUpload(event)" style="margin-bottom:14px; display:block;">
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="triggerCleaning()">Run Automated Cleaning</button>
+          </div>
+        </div>
+
+        <!-- Empty state when no dataset uploaded -->
+        <div class="empty-state-card" id="cleanEmptyState">
+          <div class="empty-state-title">Ready to Clean Your Data</div>
+          <div class="empty-state-desc">Select a dataset file above to upload it to backend storage. Once uploaded, automated cleaning will handle missing values, duplicates, and outliers.</div>
+        </div>
+
+        <div class="card" id="cleanReportCard" style="display:none;">
+          <div class="card-header">Cleaning Timeline & Report</div>
+          <div class="metrics-grid">
+            <div class="metric-box"><div class="metric-val" id="metricOrigRows">0</div><div class="metric-lbl">Original Rows</div></div>
+            <div class="metric-box"><div class="metric-val" id="metricCleanRows">0</div><div class="metric-lbl">Clean Rows</div></div>
+            <div class="metric-box"><div class="metric-val" id="metricRemovedRows">0</div><div class="metric-lbl">Removed Diff</div></div>
+            <div class="metric-box"><div class="metric-val" id="metricQualityScore">0%</div><div class="metric-lbl">Quality Index</div></div>
+          </div>
+
+          <div class="timeline-log" id="cleaningTimeline">
+            <!-- Timeline items -->
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 4. DATASET SUPPLY PAGE -->
+      <div class="view-page" id="page-datasets">
+        <div class="page-header">
+          <h1 class="page-title">Dataset Supply</h1>
+          <p class="page-subtitle">Browse curated baseline datasets below and click 'Download' to stream raw files directly to your device, or upload custom datasets in Admin mode.</p>
+        </div>
+
+        <details class="how-it-works">
+          <summary><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> How this works</summary>
+          <ol class="step-list">
+            <li>Search or filter pre-loaded machine learning datasets (Iris, Wine, Breast Cancer, Diabetes, etc.).</li>
+            <li>Click <strong>"Download"</strong> to stream raw CSV files straight to your computer.</li>
+            <li>Use the Admin Upload form below (or drop files into <code>data-library/</code> on server) to add new datasets.</li>
+          </ol>
+        </details>
+
+        <!-- Option A: Admin Upload Accordion Card -->
+        <details class="card" style="padding:16px; margin-bottom:20px;">
+          <summary style="font-weight:700; font-size:0.95rem; cursor:pointer; color:var(--accent-primary); display:flex; align-items:center; gap:8px; user-select:none;">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            + Admin: Add New Dataset to Curated Supply Library
+          </summary>
+          <form id="adminDatasetForm" onsubmit="handleAdminDatasetUpload(event)" style="margin-top:16px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+              <div>
+                <label class="form-label">Dataset File (.csv, .json, .tsv, .parquet)</label>
+                <input type="file" class="form-input" id="adminFile" accept=".csv,.json,.tsv,.parquet,.txt" required>
+              </div>
+              <div>
+                <label class="form-label">Display Name</label>
+                <input type="text" class="form-input" id="adminName" placeholder="e.g. customer_churn.csv" required>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:12px; margin-bottom:12px;">
+              <div>
+                <label class="form-label">Tag / Category</label>
+                <input type="text" class="form-input" id="adminTag" placeholder="e.g. Classification" required>
+              </div>
+              <div>
+                <label class="form-label">Description</label>
+                <input type="text" class="form-input" id="adminDesc" placeholder="Brief summary of the dataset content and target column">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="adminUploadBtn">+ Save Dataset to Supply Library</button>
+          </form>
+        </details>
+
+        <div class="card" style="padding:14px; margin-bottom:16px;">
+          <input type="text" class="form-input" id="dsSearchInput" oninput="filterDatasets()" placeholder="Search available datasets by name or task type...">
+        </div>
+
+        <div id="datasetListContainer">
+          <!-- Split bar layout: Name left, Download right -->
+        </div>
+      </div>
+
+
+      <!-- 5. TESTING FRAMEWORK PAGE -->
+      <div class="view-page" id="page-test">
+        <div class="page-header">
+          <h1 class="page-title">Testing Framework</h1>
+          <p class="page-subtitle">Select a model estimator (or upload your custom model file) and click 'Execute Testing Pipeline' to evaluate performance and view accuracy/R² metrics.</p>
+        </div>
+
+        <details class="how-it-works">
+          <summary><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> How this works</summary>
+          <ol class="step-list">
+            <li>Optionally upload your own custom model artifact (.py, .js, .pkl, .html) using the box below.</li>
+            <li>Select an estimator algorithm and specify the target task type (Classification vs. Regression).</li>
+            <li>Click <strong>"Execute Testing Pipeline"</strong> to run model evaluation and inspect metrics and logs.</li>
+          </ol>
+        </details>
+
+        <!-- Model Upload Box with Exact Center Placeholder -->
+        <div class="model-upload-box" onclick="document.getElementById('testModelFile').click()">
+          <svg class="icon icon-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <p class="model-upload-text">You can input models of types - .py/.js/.pkl/.html</p>
+          <input type="file" id="testModelFile" accept=".py,.js,.pkl,.html" style="display:none;" onchange="handleModelUpload(event, 'test')">
+          <div id="testModelStatus"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Evaluation Config</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+            <div>
+              <label class="form-label">Model Estimator</label>
+              <select class="form-input" id="testModelSel">
+                <option>Random Forest</option>
+                <option>Logistic Regression</option>
+                <option>XGBoost</option>
+                <option>Decision Tree</option>
+                <option>SVM</option>
+                <option>Neural Network</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Task Type</label>
+              <select class="form-input" id="testTaskSel">
+                <option value="classification">Classification</option>
+                <option value="regression">Regression</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="runModelTest()">Execute Testing Pipeline</button>
+        </div>
+
+        <div class="card" id="testResultsCard" style="display:none;">
+          <div class="card-header">Performance Metrics</div>
+          <div class="metrics-grid" id="testMetricsGrid"></div>
+          <div class="card-header" style="margin-top:16px;">Execution Log</div>
+          <div class="log-console" id="testLogConsole"></div>
+        </div>
+      </div>
+
+
+      <!-- 6. TRAINING FRAMEWORK PAGE -->
+      <div class="view-page" id="page-training">
+        <div class="page-header">
+          <h1 class="page-title">Training Framework</h1>
+          <p class="page-subtitle">Upload a trained model file, configure cross-validation folds, then click 'Start Model Training' to execute model training and inspect performance logs.</p>
+        </div>
+
+        <details class="how-it-works">
+          <summary><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> How this works</summary>
+          <ol class="step-list">
+            <li>Optionally upload your own custom model artifact (.py, .js, .pkl, .html).</li>
+            <li>Choose cross-validation split strategy (5-fold vs 10-fold CV).</li>
+            <li>Click <strong>"Start Model Training"</strong> to execute fitting loops and monitor execution progress.</li>
+          </ol>
+        </details>
+
+        <!-- Model Upload Box with Exact Center Placeholder -->
+        <div class="model-upload-box" onclick="document.getElementById('trainModelFile').click()">
+          <svg class="icon icon-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <p class="model-upload-text">You can input models of types - .py/.js/.pkl/.html</p>
+          <input type="file" id="trainModelFile" accept=".py,.js,.pkl,.html" style="display:none;" onchange="handleModelUpload(event, 'train')">
+          <div id="trainModelStatus"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Training Options</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+            <div>
+              <label class="form-label">Model Estimator</label>
+              <select class="form-input" id="trainModelSel">
+                <option>Random Forest</option>
+                <option>Logistic Regression</option>
+                <option>XGBoost</option>
+                <option>Decision Tree</option>
+                <option>SVM</option>
+                <option>Neural Network</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Cross Validation Folds</label>
+              <select class="form-input" id="trainFolds">
+                <option value="5">5-Fold Cross Validation</option>
+                <option value="10">10-Fold Cross Validation</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="runModelTraining()">Start Model Training</button>
+        </div>
+
+        <div class="card" id="trainResultsCard" style="display:none;">
+          <div class="card-header">Training Metrics</div>
+          <div class="metrics-grid" id="trainMetricsGrid"></div>
+          <div class="card-header" style="margin-top:16px;">Execution Log</div>
+          <div class="log-console" id="trainLogConsole"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+   4. OFFLINE / DISCONNECTED STATE (CUSTOM ANIMATED OUTLINE)
+═══════════════════════════════════════════════════════════════════ -->
+<div id="offline-overlay">
+  <div class="outline-wordmark">Data Dealers</div>
+  <div class="offline-msg">Backend API server disconnected or offline. Reconnecting...</div>
+  <button class="btn btn-secondary" onclick="checkBackendConnection()">Retry Connection</button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+   5. ABOUT MODAL
+═══════════════════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="aboutModal">
+  <div class="modal-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <h3 style="font-family:var(--font-heading); font-size:1.15rem; font-weight:700;">About DataDealers</h3>
+      <button style="background:none; border:none; cursor:pointer;" onclick="closeAboutModal()">✕</button>
+    </div>
+    <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6; margin-bottom:16px;">
+      <strong>DataDealers</strong> is a clean, trustworthy data-science platform designed for beginners, researchers, and analysts.
+      It combines server-side Gemini AI guidance, automated Pandas cleaning pipelines, real scikit-learn model evaluation, and curated dataset supply.
+    </p>
+    <div style="text-align:right;">
+      <button class="btn btn-secondary" onclick="closeAboutModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+   JAVASCRIPT LOGIC
+═══════════════════════════════════════════════════════════════════ -->
+<script>
+const API_BASE = 'http://localhost:5000';
+let activeUser = null;
+let currentSessionId = null;
+let currentProblemDesc = '';
+let availableDatasets = [];
+let simplifyCount = 0;
+
+// Static Glossary Dictionary
+const GLOSSARY = {
+  'Overfitting': 'When a model learns the noise in training data too closely, failing to generalize to new real-world data.',
+  'Cross-Validation': 'A resampling technique that splits data into folds to test a model multiple times for reliable accuracy.',
+  'Precision': 'The proportion of positive predictions that were actually correct.',
+  'Recall': 'The proportion of actual positive cases that the model correctly identified.',
+  'Random Forest': 'An ensemble model combining multiple decision trees to produce accurate and stable predictions.',
+  'Gradient Boosting': 'A technique that builds decision trees sequentially, with each tree correcting errors made by previous ones.',
+  'Class Imbalance': 'When one target outcome occurs far more frequently than others in the dataset.',
+  'Outlier': 'An extreme data point that differs significantly from other observations.',
+  'Stratification': 'Dividing data so that each train/test split maintains the exact same proportion of classes.',
+  'Hyperparameter': 'A configuration setting chosen before training a machine learning model.',
+  'One-Hot Encoding': 'Converting categorical text variables into binary (0 or 1) indicator columns.'
+};
+
+// --- Theme Management ---
+function initTheme() {
+  const savedTheme = localStorage.getItem('dd_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeUI(savedTheme);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('dd_theme', next);
+  updateThemeUI(next);
+}
+
+function updateThemeUI(theme) {
+  const label = document.getElementById('themeLabel');
+  if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
+}
+
+// --- Auth Tab Switching ---
+function switchAuthTab(tab) {
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
+  document.getElementById('groupName').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('consentStep').style.display = tab === 'signup' ? 'flex' : 'none';
+  document.getElementById('authSubmitBtn').textContent = tab === 'signup' ? 'Create Account →' : 'Log In →';
+}
+
+// --- Auth Action ---
+async function handleAuth(e) {
+  e.preventDefault();
+  const isSignup = document.getElementById('tabSignup').classList.contains('active');
+  const email = document.getElementById('authEmail').value;
+  const password = document.getElementById('authPassword').value;
+  const name = document.getElementById('authName').value;
+  const errEl = document.getElementById('authError');
+  errEl.style.display = 'none';
+
+  const endpoint = isSignup ? '/signup' : '/login';
+  const payload = isSignup ? { name, email, password, downloads_allowed: document.getElementById('consentDownload').checked } : { email, password };
+
+  try {
+    const res = await fetch(API_BASE + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      errEl.textContent = data.error || 'Authentication failed.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    // Success
+    activeUser = data.name;
+    document.getElementById('userAvatar').textContent = activeUser.charAt(0).toUpperCase();
+
+    // Render DB Quote on Entry
+    if (data.quote) {
+      document.getElementById('entryQuote').childNodes[0].nodeValue = `"${data.quote.text}" `;
+      document.getElementById('entryQuoteAuthor').textContent = `— ${data.quote.author}`;
+    }
+
+    // Show App Shell
+    document.getElementById('entry-screen').style.display = 'none';
+    document.getElementById('app-shell').classList.add('active');
+    loadDatasets();
+  } catch (err) {
+    showOfflineState();
+  }
+}
+
+// --- Navigation Router ---
+function navigateTo(pageId) {
+  document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link, .submenu-link').forEach(l => l.classList.remove('active'));
+
+  const targetPage = document.getElementById('page-' + pageId);
+  if (targetPage) targetPage.classList.add('active');
+
+  const navItem = document.getElementById('nav-' + pageId);
+  if (navItem) navItem.classList.add('active');
+
+  // Sync Submenu Parent State
+  if (['cleaning', 'datasets'].includes(pageId)) {
+    document.getElementById('item-data-works').classList.add('open');
+  } else if (['test', 'training'].includes(pageId)) {
+    document.getElementById('item-model-works').classList.add('open');
+  }
+
+  const breadcrumb = document.getElementById('breadcrumbTrail');
+  if (breadcrumb) {
+    const pagesMap = {
+      'describe': { label: 'Describe Problem' },
+      'guidance': { label: 'Model Guidance' },
+      'cleaning': { group: 'Data Works', groupPage: 'cleaning', label: 'Dataset Cleaning' },
+      'datasets': { group: 'Data Works', groupPage: 'datasets', label: 'Dataset Supply' },
+      'test': { group: 'Model Works', groupPage: 'test', label: 'Testing Framework' },
+      'training': { group: 'Model Works', groupPage: 'training', label: 'Training Framework' }
+    };
+    const info = pagesMap[pageId] || { label: pageId };
+    if (info.group) {
+      breadcrumb.innerHTML = `<a class="breadcrumb-brand" onclick="navigateTo('describe')">DataDealers</a> / <a class="breadcrumb-link" onclick="navigateTo('${info.groupPage}')">${info.group}</a> / <span class="current">${info.label}</span>`;
+    } else {
+      breadcrumb.innerHTML = `<a class="breadcrumb-brand" onclick="navigateTo('describe')">DataDealers</a> / <span class="current">${info.label}</span>`;
+    }
+  }
+
+  // Handle Guidance Empty State toggle
+  if (pageId === 'guidance') {
+    const emptyState = document.getElementById('guidanceEmptyState');
+    const mainContent = document.getElementById('guidanceMainContent');
+    if (!currentProblemDesc) {
+      emptyState.style.display = 'block';
+      mainContent.style.display = 'none';
+    } else {
+      emptyState.style.display = 'none';
+      mainContent.style.display = 'block';
+    }
+  }
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+
+function toggleSubmenu(itemId) {
+  const item = document.getElementById(itemId);
+  if (item) item.classList.toggle('open');
+}
+
+// --- Describe & Word Counter ---
+function updateWordCount() {
+  const text = document.getElementById('describeInput').value.trim();
+  const words = text ? text.split(/\s+/).length : 0;
+  const counter = document.getElementById('wordCounter');
+  counter.textContent = `${words} / 750 words`;
+  if (words > 750) counter.style.color = 'var(--danger)';
+  else counter.style.color = 'var(--text-muted)';
+}
+
+async function submitDescribe() {
+  const text = document.getElementById('describeInput').value.trim();
+  if (!text) return alert('Please enter a problem description.');
+  currentProblemDesc = text;
+  simplifyCount = 0; // Reset simplify counter for new problem
+  navigateTo('guidance');
+  await fetchModelGuidance(false, 0);
+}
+
+// Item 1 Fix: Repeatable "Make this simpler" with level tracking and button loading state
+async function requestSimplerExplanation() {
+  if (!currentProblemDesc) return;
+  simplifyCount++;
+  await fetchModelGuidance(true, simplifyCount);
+}
+
+async function fetchModelGuidance(simplify = false, level = 0) {
+  const bannerText = document.getElementById('guidanceText');
+  const simplifyBtn = document.getElementById('simplifyBtn');
+  const badge = document.getElementById('simplifyLevelBadge');
+  
+  if (simplifyBtn) {
+    simplifyBtn.disabled = true;
+    simplifyBtn.innerHTML = `<span class="spinner"></span> Simplifying (Level ${level})...`;
+  }
+  bannerText.textContent = `Analyzing problem statement with Gemini AI (Simplicity Level ${level})...`;
+
+  try {
+    const res = await fetch(API_BASE + '/guidance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description: currentProblemDesc, simplify: simplify, simplify_level: level })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      renderGuidanceResponse(data);
+    } else {
+      bannerText.textContent = data.error || 'Could not fetch guidance.';
+    }
+  } catch (err) {
+    showOfflineState();
+  } finally {
+    if (simplifyBtn) {
+      simplifyBtn.disabled = false;
+      simplifyBtn.textContent = level > 0 ? `Make this even simpler (Level ${level + 1}) →` : 'Make this simpler';
+    }
+    if (badge) {
+      if (level > 0) {
+        badge.textContent = `Simplicity Level ${level}`;
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  }
+}
+
+function renderGuidanceResponse(data) {
+  let narrative = data.analysis || '';
+
+  // Apply Glossary Terms formatting with Purple Accent
+  Object.keys(GLOSSARY).forEach(term => {
+    const regex = new RegExp(`\\b(${term})\\b`, 'gi');
+    narrative = narrative.replace(regex, `<span class="glossary-term">$1<span class="glossary-tooltip"><strong>$1</strong>${GLOSSARY[term]}</span></span>`);
+  });
+
+  if (data.family_mismatch_note) {
+    narrative = `<div class="family-mismatch-banner">⚠️ ${data.family_mismatch_note}</div>` + narrative;
+  }
+
+  document.getElementById('guidanceText').innerHTML = narrative;
+
+  // Render Models Grid
+  const grid = document.getElementById('modelGrid');
+  grid.innerHTML = (data.models || []).map(m => `
+    <div class="model-card ${m.top ? 'top-pick' : ''}">
+      ${m.top ? '<span class="top-badge">★ Top Recommendation</span>' : ''}
+      <div class="model-title">${m.name}</div>
+      <div class="model-desc">${m.desc}</div>
+      <div class="model-tags">
+        ${(m.stats || []).map(s => `<span class="model-tag">${s}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// --- Dataset Supply & Admin Upload Flow ---
+async function loadDatasets() {
+  try {
+    const res = await fetch(API_BASE + '/datasets');
+    const data = await res.json();
+    availableDatasets = data.datasets || [];
+    renderDatasetList(availableDatasets);
+  } catch (err) {
+    showOfflineState();
+  }
+}
+
+function renderDatasetList(list) {
+  const container = document.getElementById('datasetListContainer');
+  if (!list.length) {
+    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:30px;">No datasets match your search query.</div>';
+    return;
+  }
+  container.innerHTML = list.map(d => `
+    <div class="ds-row">
+      <div class="ds-info">
+        <svg class="icon icon-lg" viewBox="0 0 24 24" style="color:var(--accent-primary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <div>
+          <div class="ds-name">${d.name} ${d.is_custom ? '<span class="model-tag" style="background:var(--accent-subtle); color:var(--accent-primary);">Custom</span>' : ''}</div>
+          <div class="ds-meta">${d.rows} rows • ${d.cols} cols • ${d.size} • ${d.tag}</div>
+        </div>
+      </div>
+      <a class="btn btn-secondary" style="padding:6px 14px; font-size:0.8rem;" href="${API_BASE}/datasets/${d.name}/download" download>
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Download
+      </a>
+    </div>
+  `).join('');
+}
+
+function filterDatasets() {
+  const q = document.getElementById('dsSearchInput').value.toLowerCase();
+  const filtered = availableDatasets.filter(d => d.name.toLowerCase().includes(q) || d.tag.toLowerCase().includes(q));
+  renderDatasetList(filtered);
+}
+
+// Option A: Admin Dataset Upload Handler
+async function handleAdminDatasetUpload(e) {
+  e.preventDefault();
+  const fileInput = document.getElementById('adminFile');
+  const nameInput = document.getElementById('adminName');
+  const tagInput = document.getElementById('adminTag');
+  const descInput = document.getElementById('adminDesc');
+  const btn = document.getElementById('adminUploadBtn');
+
+  if (!fileInput.files[0]) return alert('Please select a dataset file.');
+
+  const formData = new FormData();
+  formData.append('file', fileInput.files[0]);
+  formData.append('display_name', nameInput.value.trim());
+  formData.append('tag', tagInput.value.trim());
+  formData.append('description', descInput.value.trim());
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Adding dataset...';
+
+  try {
+    const res = await fetch(API_BASE + '/admin/upload_dataset', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      alert(`Success: ${data.message}`);
+      fileInput.value = '';
+      nameInput.value = '';
+      tagInput.value = '';
+      descInput.value = '';
+      await loadDatasets();
+    } else {
+      alert(data.error || 'Failed to add dataset to library.');
+    }
+  } catch (err) {
+    showOfflineState();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '+ Save Dataset to Supply Library';
+  }
+}
+
+// --- Upload & Cleaning Flow ---
+async function handleDatasetUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const res = await fetch(API_BASE + '/upload_data', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (res.ok) {
+      currentSessionId = data.session_id;
+      const emptyState = document.getElementById('cleanEmptyState');
+      if (emptyState) emptyState.style.display = 'none';
+      alert(`File "${data.filename}" uploaded successfully! Session ID: ${data.session_id}`);
+    } else {
+      alert(data.error || 'Upload failed.');
+    }
+  } catch (err) {
+    showOfflineState();
+  }
+}
+
+async function triggerCleaning() {
+  if (!currentSessionId) return alert('Please upload a dataset file first.');
+
+  try {
+    const res = await fetch(`${API_BASE}/clean/${currentSessionId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ remove_duplicates: true, fix_types: true, remove_outliers: true })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      document.getElementById('cleanReportCard').style.display = 'block';
+      document.getElementById('metricOrigRows').textContent = data.original_rows;
+      document.getElementById('metricCleanRows').textContent = data.clean_rows;
+      document.getElementById('metricRemovedRows').textContent = data.total_removed;
+      document.getElementById('metricQualityScore').textContent = `${data.quality_score}%`;
+
+      document.getElementById('cleaningTimeline').innerHTML = (data.steps || []).map(s => `
+        <div class="timeline-item">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" style="color:var(--success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <div>${s.msg}</div>
+        </div>
+      `).join('');
+    }
+  } catch (err) {
+    showOfflineState();
+  }
+}
+
+// --- Item 4: Model Upload Handler (.py, .js, .pkl, .html) ---
+async function handleModelUpload(e, pageType) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const statusEl = document.getElementById(pageType === 'test' ? 'testModelStatus' : 'trainModelStatus');
+  statusEl.innerHTML = '<span class="spinner"></span> Uploading model file...';
+
+  try {
+    const res = await fetch(API_BASE + '/upload_model', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      statusEl.innerHTML = `<div class="uploaded-model-tag">✓ Model Registered: ${data.filename} (${data.file_type.toUpperCase()})</div>`;
+      
+      // Update Dropdowns on both Testing and Training pages
+      ['testModelSel', 'trainModelSel'].forEach(selId => {
+        const sel = document.getElementById(selId);
+        if (sel) {
+          const opt = document.createElement('option');
+          opt.value = data.model_id;
+          opt.textContent = `Uploaded: ${data.filename}`;
+          opt.selected = true;
+          sel.appendChild(opt);
+        }
+      });
+    } else {
+      statusEl.innerHTML = `<div style="color:var(--danger); font-size:0.8rem; margin-top:6px;">${data.error || 'Model upload failed.'}</div>`;
+    }
+  } catch (err) {
+    showOfflineState();
+  }
+}
+
+// --- Model Testing Flow ---
+async function runModelTest() {
+  const model = document.getElementById('testModelSel').value;
+  const task_type = document.getElementById('testTaskSel').value;
+
+  try {
+    const res = await fetch(API_BASE + '/test_model', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, task_type, session_id: currentSessionId })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      document.getElementById('testResultsCard').style.display = 'block';
+      const m = data.metrics || {};
+      let html = '';
+
+      if (task_type === 'classification') {
+        html = `
+          <div class="metric-box"><div class="metric-val">${(m.accuracy * 100).toFixed(1)}%</div><div class="metric-lbl">Accuracy</div></div>
+          <div class="metric-box"><div class="metric-val">${(m.precision * 100).toFixed(1)}%</div><div class="metric-lbl">Precision</div></div>
+          <div class="metric-box"><div class="metric-val">${(m.recall * 100).toFixed(1)}%</div><div class="metric-lbl">Recall</div></div>
+          <div class="metric-box"><div class="metric-val">${(m.f1 * 100).toFixed(1)}%</div><div class="metric-lbl">F1 Score</div></div>
+        `;
+      } else {
+        html = `
+          <div class="metric-box"><div class="metric-val">${m.r2.toFixed(3)}</div><div class="metric-lbl">R² Score</div></div>
+          <div class="metric-box"><div class="metric-val">${m.mae.toFixed(2)}</div><div class="metric-lbl">MAE</div></div>
+          <div class="metric-box"><div class="metric-val">${m.rmse.toFixed(2)}</div><div class="metric-lbl">RMSE</div></div>
+          <div class="metric-box"><div class="metric-val">${(m.mape * 100).toFixed(1)}%</div><div class="metric-lbl">MAPE</div></div>
+        `;
+      }
+
+      document.getElementById('testMetricsGrid').innerHTML = html;
+      document.getElementById('testLogConsole').innerHTML = (data.logs || []).map(l => `<div>${l}</div>`).join('');
+    }
+  } catch (err) {
+    showOfflineState();
+  }
+}
+
+// --- Model Training Flow ---
+async function runModelTraining() {
+  const model = document.getElementById('trainModelSel').value;
+  const folds = document.getElementById('trainFolds').value;
+
+  try {
+    const res = await fetch(API_BASE + '/test_model', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, task_type: 'classification', session_id: currentSessionId })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      document.getElementById('trainResultsCard').style.display = 'block';
+      const m = data.metrics || {};
+      const html = `
+        <div class="metric-box"><div class="metric-val">${(m.accuracy * 100).toFixed(1)}%</div><div class="metric-lbl">CV Accuracy</div></div>
+        <div class="metric-box"><div class="metric-val">${folds}</div><div class="metric-lbl">Folds Evaluated</div></div>
+        <div class="metric-box"><div class="metric-val">${(m.f1 * 100).toFixed(1)}%</div><div class="metric-lbl">Macro F1</div></div>
+      `;
+
+      document.getElementById('trainMetricsGrid').innerHTML = html;
+      document.getElementById('trainLogConsole').innerHTML = [
+        `[00:00:01] Starting ${folds}-fold Cross Validation training loop...`,
+        `[00:00:02] Model estimator initialized: ${data.model}`,
+        ... (data.logs || [])
+      ].map(l => `<div>${l}</div>`).join('');
+    }
+  } catch (err) {
+    showOfflineState();
+  }
+}
+
+// --- About Modal ---
+function openAboutModal() { document.getElementById('aboutModal').classList.add('active'); }
+function closeAboutModal() { document.getElementById('aboutModal').classList.remove('active'); }
+
+// --- Disconnected / Offline Overlay ---
+function showOfflineState() {
+  document.getElementById('offline-overlay').classList.add('active');
+}
+
+async function checkBackendConnection() {
+  try {
+    const res = await fetch(API_BASE + '/', { signal: AbortSignal.timeout(3000) });
+    if (res.ok) {
+      document.getElementById('offline-overlay').classList.remove('active');
+    }
+  } catch (e) {
+    // Keep overlay active
+  }
+}
+
+// --- Init ---
+initTheme();
+setInterval(checkBackendConnection, 10000);
+</script>
+
+</body>
+</html>
