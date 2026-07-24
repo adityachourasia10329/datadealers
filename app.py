@@ -904,15 +904,14 @@ def _scan_data_library():
                     rows = int(df.shape[0]) if df is not None else 0
                     cols = int(df.shape[1]) if df is not None else 0
                     
-                    # Clean title formatting
-                    raw_title = fname.rsplit('.', 1)[0].replace('_', ' ').replace('-', ' ').title()
-                    display_title = f"{raw_title}.{ext}"
+                    # Clean title formatting without .csv extension
+                    display_title = fname.rsplit('.', 1)[0].replace('_', ' ').replace('-', ' ').title()
 
                     library_datasets.append({
                         'name': display_title,
                         'raw_filename': fname,
                         'tag': 'Curated Supply',
-                        'description': f'Curated dataset: {raw_title}',
+                        'description': f'Curated dataset: {display_title}',
                         'rows': rows,
                         'cols': cols,
                         'size': f'{size_kb} KB',
@@ -955,14 +954,12 @@ def download_dataset(name):
     if os.path.exists(library_path):
         return send_file(library_path, as_attachment=True, download_name=name)
 
-    # Check data-library/ folder fuzzy / clean title match
+    # Check data-library/ folder fuzzy / title / raw filename match
     if os.path.exists(DATA_LIBRARY_DIR):
         for fname in os.listdir(DATA_LIBRARY_DIR):
             fpath = os.path.join(DATA_LIBRARY_DIR, fname)
             raw_title = fname.rsplit('.', 1)[0].replace('_', ' ').replace('-', ' ').title()
-            ext = fname.rsplit('.', 1)[1].lower() if '.' in fname else ''
-            display_title = f"{raw_title}.{ext}"
-            if fname == name or display_title == name or fname.lower() == name.lower():
+            if fname == name or raw_title == name or fname.lower() == name.lower() or raw_title.lower() == name.lower():
                 return send_file(fpath, as_attachment=True, download_name=fname)
 
     return jsonify({'error': f'Requested dataset "{name}" not found.'}), 404
