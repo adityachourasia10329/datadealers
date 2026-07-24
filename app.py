@@ -883,14 +883,13 @@ def _scan_data_library():
     if not os.path.exists(DATA_LIBRARY_DIR):
         return library_datasets
 
-    for fname in os.listdir(DATA_LIBRARY_DIR):
+    for fname in sorted(os.listdir(DATA_LIBRARY_DIR)):
         fpath = os.path.join(DATA_LIBRARY_DIR, fname)
         if os.path.isfile(fpath) and not fname.startswith('.'):
             ext = fname.rsplit('.', 1)[1].lower() if '.' in fname else ''
             if ext in ['csv', 'tsv', 'json', 'parquet']:
                 try:
                     size_kb = round(os.path.getsize(fpath) / 1024, 1)
-                    # Quick pandas inspect
                     if ext == 'csv':
                         df = pd.read_csv(fpath, nrows=5)
                     elif ext == 'tsv':
@@ -905,10 +904,15 @@ def _scan_data_library():
                     rows = int(df.shape[0]) if df is not None else 0
                     cols = int(df.shape[1]) if df is not None else 0
                     
+                    # Clean title formatting
+                    raw_title = fname.rsplit('.', 1)[0].replace('_', ' ').replace('-', ' ').title()
+                    display_title = f"{raw_title}.{ext}"
+
                     library_datasets.append({
-                        'name': fname,
-                        'tag': 'Custom Library',
-                        'description': f'Auto-ingested dataset file dropped in data-library/{fname}.',
+                        'name': display_title,
+                        'raw_filename': fname,
+                        'tag': 'Curated Supply',
+                        'description': f'Curated dataset: {raw_title}',
                         'rows': rows,
                         'cols': cols,
                         'size': f'{size_kb} KB',
@@ -920,109 +924,24 @@ def _scan_data_library():
     return library_datasets
 
 
-@app.route('/admin/upload_dataset', methods=['POST'])
-def admin_upload_dataset():
-    f = request.files.get('file')
-    if not f:
-        return jsonify({'error': 'No dataset file uploaded.'}), 400
-
-    display_name = (request.form.get('display_name') or f.filename or 'custom_dataset.csv').strip()
-    tag = (request.form.get('tag') or 'Custom').strip()
-    desc = (request.form.get('description') or 'User-contributed dataset for curated library.').strip()
-
-    if not display_name.endswith(('.csv', '.tsv', '.json', '.parquet', '.txt')):
-        display_name += '.csv'
-
-    save_path = os.path.join(DATA_LIBRARY_DIR, display_name)
-    try:
-        raw = f.read()
-        with open(save_path, 'wb') as out:
-            out.write(raw)
-
-        # Inspect dimensions
-        ext = display_name.rsplit('.', 1)[1].lower() if '.' in display_name else 'csv'
-        rows, cols = 0, 0
-        try:
-            if ext == 'csv':
-                df = pd.read_csv(io.BytesIO(raw))
-            elif ext == 'tsv':
-                df = pd.read_csv(io.BytesIO(raw), sep='\t')
-            elif ext == 'json':
-                df = pd.read_json(io.BytesIO(raw))
-            elif ext == 'parquet':
-                df = pd.read_parquet(io.BytesIO(raw))
-            else:
-                df = None
-            if df is not None:
-                rows, cols = int(df.shape[0]), int(df.shape[1])
-        except Exception:
-            pass
-
-        size_str = f'{round(len(raw) / 1024, 1)} KB'
-        db.add_custom_dataset(display_name, tag, desc, rows, cols, size_str, save_path)
-
-        return jsonify({
-            'message': f'Dataset "{display_name}" added to Dataset Supply library successfully!',
-            'dataset': {
-                'name': display_name,
-                'tag': tag,
-                'description': desc,
-                'rows': rows,
-                'cols': cols,
-                'size': size_str
-            }
-        })
-    except Exception as e:
-        return jsonify({'error': f'Failed to add dataset: {e}'}), 500
-
-
 @app.route('/datasets')
 def datasets():
     out = []
     seen_names = set()
 
-    # 1. Toy Datasets
-    for name, (loader, tag, desc) in _toy_datasets().items():
-        d = loader()
-        df = pd.DataFrame(d.data, columns=getattr(d, 'feature_names', None))
-        out.append({
-            'name': name,
-            'tag': tag,
-            'description': desc,
-            'rows': int(df.shape[0]),
-            'cols': int(df.shape[1]) + 1,
-            'size': f'{round(df.memory_usage(deep=True).sum()/1024, 1)} KB',
-            'is_custom': False
-        })
-        seen_names.add(name)
-
-    # 2. Database Custom Datasets
-    custom_db = db.get_custom_datasets()
-    for cd in custom_db:
-        if cd['name'] not in seen_names:
-            out.append({
-                'name': cd['name'],
-                'tag': cd['tag'],
-                'description': cd['description'],
-                'rows': cd['rows'],
-                'cols': cd['cols'],
-                'size': cd['size'],
-                'is_custom': True
-            })
-            seen_names.add(cd['name'])
-
-    # 3. Server Folder Scanned Datasets (data-library/)
+    # Server Folder Scanned Datasets (data-library/)
     folder_ds = _scan_data_library()
     for fds in folder_ds:
         if fds['name'] not in seen_names:
             out.append({
                 'name': fds['name'],
+                'raw_filename': fds['raw_filename'],
                 'tag': fds['tag'],
                 'description': fds['description'],
                 'rows': fds['rows'],
                 'cols': fds['cols'],
                 'size': fds['size'],
-                'is_custom': True
+                'is_custom': False
             })
             seen_names.add(fds['name'])
 
@@ -1031,27 +950,20 @@ def datasets():
 
 @app.route('/datasets/<name>/download')
 def download_dataset(name):
-    toys = _toy_datasets()
-    if name in toys:
-        loader, _, _ = toys[name]
-        d = loader()
-        df = pd.DataFrame(d.data, columns=getattr(d, 'feature_names', None))
-        df['target'] = d.target
-        buf = io.BytesIO()
-        df.to_csv(buf, index=False)
-        buf.seek(0)
-        return send_file(buf, mimetype='text/csv', as_attachment=True, download_name=name)
-
-    # Check data-library/ folder
+    # Check data-library/ folder exact match
     library_path = os.path.join(DATA_LIBRARY_DIR, name)
     if os.path.exists(library_path):
         return send_file(library_path, as_attachment=True, download_name=name)
 
-    # Check DB custom datasets
-    custom_db = db.get_custom_datasets()
-    for cd in custom_db:
-        if cd['name'] == name and os.path.exists(cd['file_path']):
-            return send_file(cd['file_path'], as_attachment=True, download_name=name)
+    # Check data-library/ folder fuzzy / clean title match
+    if os.path.exists(DATA_LIBRARY_DIR):
+        for fname in os.listdir(DATA_LIBRARY_DIR):
+            fpath = os.path.join(DATA_LIBRARY_DIR, fname)
+            raw_title = fname.rsplit('.', 1)[0].replace('_', ' ').replace('-', ' ').title()
+            ext = fname.rsplit('.', 1)[1].lower() if '.' in fname else ''
+            display_title = f"{raw_title}.{ext}"
+            if fname == name or display_title == name or fname.lower() == name.lower():
+                return send_file(fpath, as_attachment=True, download_name=fname)
 
     return jsonify({'error': f'Requested dataset "{name}" not found.'}), 404
 

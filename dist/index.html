@@ -956,47 +956,16 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
       <div class="view-page" id="page-datasets">
         <div class="page-header">
           <h1 class="page-title">Dataset Supply</h1>
-          <p class="page-subtitle">Browse curated baseline datasets below and click 'Download' to stream raw files directly to your device, or upload custom datasets in Admin mode.</p>
+          <p class="page-subtitle">Browse curated machine learning datasets below and click 'Download' to stream raw files directly to your device.</p>
         </div>
 
         <details class="how-it-works">
           <summary><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> How this works</summary>
           <ol class="step-list">
-            <li>Search or filter pre-loaded machine learning datasets (Iris, Wine, Breast Cancer, Diabetes, etc.).</li>
-            <li>Click <strong>"Download"</strong> to stream raw CSV files straight to your computer.</li>
-            <li>Use the Admin Upload form below (or drop files into <code>data-library/</code> on server) to add new datasets.</li>
+            <li>Search or filter curated machine learning datasets from the supply library.</li>
+            <li>Click <strong>"Download"</strong> to stream raw dataset files straight to your computer.</li>
+            <li>New datasets are curated and added to the supply library directly by developers.</li>
           </ol>
-        </details>
-
-        <!-- Option A: Admin Upload Accordion Card -->
-        <details class="card" style="padding:16px; margin-bottom:20px;">
-          <summary style="font-weight:700; font-size:0.95rem; cursor:pointer; color:var(--accent-primary); display:flex; align-items:center; gap:8px; user-select:none;">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            + Admin: Add New Dataset to Curated Supply Library
-          </summary>
-          <form id="adminDatasetForm" onsubmit="handleAdminDatasetUpload(event)" style="margin-top:16px;">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
-              <div>
-                <label class="form-label">Dataset File (.csv, .json, .tsv, .parquet)</label>
-                <input type="file" class="form-input" id="adminFile" accept=".csv,.json,.tsv,.parquet,.txt" required>
-              </div>
-              <div>
-                <label class="form-label">Display Name</label>
-                <input type="text" class="form-input" id="adminName" placeholder="e.g. customer_churn.csv" required>
-              </div>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 2fr; gap:12px; margin-bottom:12px;">
-              <div>
-                <label class="form-label">Tag / Category</label>
-                <input type="text" class="form-input" id="adminTag" placeholder="e.g. Classification" required>
-              </div>
-              <div>
-                <label class="form-label">Description</label>
-                <input type="text" class="form-input" id="adminDesc" placeholder="Brief summary of the dataset content and target column">
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary" id="adminUploadBtn">+ Save Dataset to Supply Library</button>
-          </form>
         </details>
 
         <div class="card" style="padding:14px; margin-bottom:16px;">
