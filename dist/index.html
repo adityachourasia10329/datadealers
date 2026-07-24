@@ -1218,9 +1218,15 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
             <h2 style="font-family:var(--font-heading); font-size:1.25rem; font-weight:700; color:var(--text-main); margin-bottom:4px;" id="profileName">User Name</h2>
             <div style="font-size:0.85rem; color:var(--text-muted); font-family:var(--font-mono); margin-bottom:16px;" id="profileEmail">user@datadealers.local</div>
             
-            <div style="display:inline-block; padding:4px 12px; background:var(--accent-subtle); border-radius:var(--radius-sm); font-size:0.75rem; font-weight:600; color:var(--accent-primary);">
+            <div style="display:inline-block; padding:4px 12px; background:var(--accent-subtle); border-radius:var(--radius-sm); font-size:0.75rem; font-weight:600; color:var(--accent-primary); margin-bottom:16px;">
               DataDealers Member
             </div>
+
+            <!-- Logout Option -->
+            <button class="btn btn-secondary" onclick="handleLogout()" style="width:100%; justify-content:center; gap:8px; border-color:var(--accent-red); color:var(--accent-red);">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              Log Out
+            </button>
           </div>
 
           <!-- Problem History Card -->
@@ -1406,6 +1412,35 @@ function switchAuthTab(tab) {
   document.getElementById('groupName').style.display = tab === 'signup' ? 'block' : 'none';
   document.getElementById('consentStep').style.display = tab === 'signup' ? 'flex' : 'none';
   document.getElementById('authSubmitBtn').textContent = tab === 'signup' ? 'Create Account →' : 'Log In →';
+}
+
+function handleLogout() {
+  activeUser = null;
+  try {
+    localStorage.removeItem('dd_active_user');
+  } catch (e) {}
+
+  const appShell = document.getElementById('app-shell');
+  if (appShell) {
+    appShell.classList.remove('active');
+    appShell.style.display = 'none';
+  }
+
+  const entryScreen = document.getElementById('entry-screen');
+  if (entryScreen) {
+    entryScreen.style.display = 'flex';
+  }
+
+  switchAuthTab('login');
+
+  const emailInput = document.getElementById('authEmail');
+  const pwdInput = document.getElementById('authPassword');
+  const nameInput = document.getElementById('authName');
+  const errEl = document.getElementById('authError');
+  if (emailInput) emailInput.value = '';
+  if (pwdInput) pwdInput.value = '';
+  if (nameInput) nameInput.value = '';
+  if (errEl) errEl.style.display = 'none';
 }
 
 // --- Auth Action ---
