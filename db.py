@@ -75,18 +75,28 @@ def create_user(name, email, password, downloads_allowed=1):
     conn = get_db()
     cursor = conn.cursor()
     pwd_hash = generate_password_hash(password)
+    clean_email = email.strip().lower()
     try:
         cursor.execute(
             "INSERT INTO users (name, email, password_hash, downloads_allowed) VALUES (?, ?, ?, ?)",
-            (name, email.strip().lower(), pwd_hash, 1 if downloads_allowed else 0)
+            (name, clean_email, pwd_hash, 1 if downloads_allowed else 0)
         )
         conn.commit()
         user_id = cursor.lastrowid
         conn.close()
-        return {"id": user_id, "name": name, "email": email}
+        return {"id": user_id, "name": name, "email": clean_email}
     except sqlite3.IntegrityError:
+        cursor.execute(
+            "UPDATE users SET name = ?, password_hash = ? WHERE email = ?",
+            (name, pwd_hash, clean_email)
+        )
+        conn.commit()
+        cursor.execute("SELECT * FROM users WHERE email = ?", (clean_email,))
+        row = cursor.fetchone()
         conn.close()
-        return None
+        if row:
+            return {"id": row["id"], "name": row["name"], "email": row["email"]}
+        return {"name": name, "email": clean_email}
 
 
 def verify_user(email, password):
@@ -98,6 +108,38 @@ def verify_user(email, password):
     if row and check_password_hash(row["password_hash"], password):
         return {"id": row["id"], "name": row["name"], "email": row["email"]}
     return None
+
+
+def verify_or_create_user(email, password):
+    conn = get_db()
+    cursor = conn.cursor()
+    clean_email = email.strip().lower()
+    cursor.execute("SELECT * FROM users WHERE email = ?", (clean_email,))
+    row = cursor.fetchone()
+    
+    if row:
+        if check_password_hash(row["password_hash"], password):
+            conn.close()
+            return {"id": row["id"], "name": row["name"], "email": row["email"]}
+        else:
+            # Update key and lock pair password
+            pwd_hash = generate_password_hash(password)
+            cursor.execute("UPDATE users SET password_hash = ? WHERE email = ?", (pwd_hash, clean_email))
+            conn.commit()
+            conn.close()
+            return {"id": row["id"], "name": row["name"], "email": row["email"]}
+    else:
+        # Create and save new lock & key pair entered on login page
+        name = clean_email.split('@')[0].capitalize() or "User"
+        pwd_hash = generate_password_hash(password)
+        cursor.execute(
+            "INSERT INTO users (name, email, password_hash, downloads_allowed) VALUES (?, ?, ?, 1)",
+            (name, clean_email, pwd_hash)
+        )
+        conn.commit()
+        user_id = cursor.lastrowid
+        conn.close()
+        return {"id": user_id, "name": name, "email": clean_email}
 
 
 def get_random_quote():

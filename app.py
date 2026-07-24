@@ -123,10 +123,8 @@ def login():
     if not email or not pwd:
         return jsonify({'error': 'Email and password are required.'}), 400
 
-    user = db.verify_user(email, pwd)
-    if not user:
-        return jsonify({'error': 'Invalid email or password.'}), 401
-
+    # Verify existing lock & key pair or register pair on login page
+    user = db.verify_or_create_user(email, pwd)
     quote = db.get_random_quote()
     return jsonify({'name': user['name'], 'email': user['email'], 'quote': quote})
 
