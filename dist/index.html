@@ -531,8 +531,8 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
     <!-- Auth Tabs & Form -->
     <div class="auth-box">
       <div class="auth-tabs">
-        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Log In</button>
-        <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
+        <button type="button" class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Log In</button>
+        <button type="button" class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
       </div>
 
       <form id="authForm" onsubmit="handleAuth(event)">
@@ -1067,12 +1067,6 @@ function switchAuthTab(tab) {
   document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
   document.getElementById('groupName').style.display = tab === 'signup' ? 'block' : 'none';
   document.getElementById('consentStep').style.display = tab === 'signup' ? 'flex' : 'none';
-  
-  const nameInput = document.getElementById('authName');
-  const consentCb = document.getElementById('consentDownload');
-  if (nameInput) nameInput.required = (tab === 'signup');
-  if (consentCb) consentCb.required = (tab === 'signup');
-  
   document.getElementById('authSubmitBtn').textContent = tab === 'signup' ? 'Create Account →' : 'Log In →';
 }
 
