@@ -531,8 +531,8 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
     <!-- Auth Tabs & Form -->
     <div class="auth-box">
       <div class="auth-tabs">
-        <button type="button" class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Log In</button>
-        <button type="button" class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Log In</button>
+        <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
       </div>
 
       <form id="authForm" onsubmit="handleAuth(event)">
@@ -553,15 +553,12 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
 
         <!-- Pre-signup permission consent step -->
         <div class="consent-step" id="consentStep" style="display:none;">
-          <input type="checkbox" id="consentDownload">
+          <input type="checkbox" id="consentDownload" required>
           <label for="consentDownload">Allow dataset file downloads to your local device for dataset supply feature.</label>
         </div>
 
         <button type="submit" class="btn btn-primary btn-full" id="authSubmitBtn">Log In →</button>
         <div class="auth-error" id="authError"></div>
-        <div style="margin-top: 16px; text-align: center; font-size: 0.85rem; color: var(--text-muted);" id="authToggleMsg">
-          Don't have an account? <a href="#" onclick="switchAuthTab('signup'); return false;" style="color: var(--accent-primary); font-weight: 600; text-decoration: underline;">Sign Up</a>
-        </div>
       </form>
     </div>
   </div>
@@ -1022,6 +1019,7 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
 <!-- ═══════════════════════════════════════════════════════════════════
    JAVASCRIPT LOGIC
 ═══════════════════════════════════════════════════════════════════ -->
+<script>
 const API_BASE = 'https://datadealers.onrender.com';
 let activeUser = null;
 let currentSessionId = null;
@@ -1071,48 +1069,20 @@ function switchAuthTab(tab) {
   document.getElementById('groupName').style.display = tab === 'signup' ? 'block' : 'none';
   document.getElementById('consentStep').style.display = tab === 'signup' ? 'flex' : 'none';
   document.getElementById('authSubmitBtn').textContent = tab === 'signup' ? 'Create Account →' : 'Log In →';
-  
-  const errEl = document.getElementById('authError');
-  if (errEl) errEl.style.display = 'none';
-  
-  const toggleMsg = document.getElementById('authToggleMsg');
-  if (toggleMsg) {
-    toggleMsg.innerHTML = tab === 'signup'
-      ? `Already have an account? <a href="#" onclick="switchAuthTab('login'); return false;" style="color: var(--accent-primary); font-weight: 600; text-decoration: underline;">Log In</a>`
-      : `Don't have an account? <a href="#" onclick="switchAuthTab('signup'); return false;" style="color: var(--accent-primary); font-weight: 600; text-decoration: underline;">Sign Up</a>`;
-  }
 }
 
 // --- Auth Action ---
 async function handleAuth(e) {
   e.preventDefault();
   const isSignup = document.getElementById('tabSignup').classList.contains('active');
-  const email = (document.getElementById('authEmail').value || '').trim();
+  const email = document.getElementById('authEmail').value;
   const password = document.getElementById('authPassword').value;
-  const name = (document.getElementById('authName').value || '').trim();
+  const name = document.getElementById('authName').value;
   const errEl = document.getElementById('authError');
-  const submitBtn = document.getElementById('authSubmitBtn');
   errEl.style.display = 'none';
-
-  if (isSignup) {
-    if (!name) {
-      errEl.textContent = 'Please enter your full name.';
-      errEl.style.display = 'block';
-      return;
-    }
-    if (!document.getElementById('consentDownload').checked) {
-      errEl.textContent = 'Please allow dataset file downloads to create an account.';
-      errEl.style.display = 'block';
-      return;
-    }
-  }
 
   const endpoint = isSignup ? '/signup' : '/login';
   const payload = isSignup ? { name, email, password, downloads_allowed: document.getElementById('consentDownload').checked } : { email, password };
-
-  const originalBtnText = submitBtn.textContent;
-  submitBtn.disabled = true;
-  submitBtn.textContent = isSignup ? 'Creating Account...' : 'Logging in...';
 
   try {
     const res = await fetch(API_BASE + endpoint, {
@@ -1129,35 +1099,21 @@ async function handleAuth(e) {
     }
 
     // Success
-    activeUser = data.name || email.split('@')[0] || 'User';
-    const avatarEl = document.getElementById('userAvatar');
-    if (avatarEl) avatarEl.textContent = activeUser.charAt(0).toUpperCase();
+    activeUser = data.name;
+    document.getElementById('userAvatar').textContent = activeUser.charAt(0).toUpperCase();
 
     // Render DB Quote on Entry
     if (data.quote) {
-      const quoteEl = document.getElementById('entryQuote');
-      if (quoteEl && quoteEl.childNodes[0]) quoteEl.childNodes[0].nodeValue = `"${data.quote.text}" `;
-      const authorEl = document.getElementById('entryQuoteAuthor');
-      if (authorEl) authorEl.textContent = `— ${data.quote.author}`;
+      document.getElementById('entryQuote').childNodes[0].nodeValue = `"${data.quote.text}" `;
+      document.getElementById('entryQuoteAuthor').textContent = `— ${data.quote.author}`;
     }
 
-    // Show App Shell and Navigate to Main Page (Describe Problem)
+    // Show App Shell
     document.getElementById('entry-screen').style.display = 'none';
     document.getElementById('app-shell').classList.add('active');
-    navigateTo('describe');
-    
-    try {
-      loadDatasets();
-    } catch (e) {
-      console.warn('Dataset loading warning:', e);
-    }
+    loadDatasets();
   } catch (err) {
-    console.error('Auth error:', err);
-    errEl.textContent = 'Unable to reach backend server. Please verify network connection or try again in a few seconds.';
-    errEl.style.display = 'block';
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalBtnText;
+    showOfflineState();
   }
 }
 
@@ -1583,12 +1539,12 @@ function showOfflineState() {
 
 async function checkBackendConnection() {
   try {
-    const res = await fetch(API_BASE + '/', { signal: AbortSignal.timeout(20000) });
+    const res = await fetch(API_BASE + '/', { signal: AbortSignal.timeout(3000) });
     if (res.ok) {
       document.getElementById('offline-overlay').classList.remove('active');
     }
   } catch (e) {
-    // Keep overlay active if server unreachable after timeout
+    // Keep overlay active
   }
 }
 
