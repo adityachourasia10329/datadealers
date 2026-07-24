@@ -511,6 +511,39 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
   background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
   width: 100%; max-width: 480px; padding: 24px; box-shadow: var(--shadow-md);
 }
+
+/* Beginner Friendly Gemini Hover Tooltips */
+.gemini-tooltip-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: var(--radius-sm);
+  background: var(--bg-subtle); border: 1px solid var(--border-color);
+  font-size: 0.78rem; font-weight: 600; color: var(--accent-primary);
+  cursor: help; position: relative; transition: all 0.2s;
+  margin-right: 6px; margin-bottom: 8px; user-select: none;
+}
+.gemini-tooltip-badge:hover {
+  background: var(--accent-subtle); border-color: var(--accent-primary); color: var(--accent-hover);
+}
+.gemini-tooltip-box {
+  position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
+  width: 290px; padding: 12px 14px;
+  background: var(--bg-card); color: var(--text-main);
+  border: 1px solid var(--accent-purple-border); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md); font-size: 0.78rem; line-height: 1.55; font-weight: 400;
+  pointer-events: none; opacity: 0; visibility: hidden; transition: opacity 0.2s, transform 0.2s;
+  z-index: 300; text-align: left;
+}
+.gemini-tooltip-box::after {
+  content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border-width: 6px; border-style: solid; border-color: var(--bg-card) transparent transparent transparent;
+}
+.gemini-tooltip-badge:hover .gemini-tooltip-box {
+  opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-4px);
+}
+.tooltip-title {
+  font-weight: 700; font-family: var(--font-heading); color: var(--accent-purple);
+  margin-bottom: 4px; display: flex; align-items: center; gap: 4px; font-size: 0.8rem;
+}
 </style>
 </head>
 <body>
@@ -660,8 +693,8 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
           About
         </button>
 
-        <!-- Profile Avatar -->
-        <div class="user-avatar" id="userAvatar">A</div>
+        <!-- Profile Avatar (Clickable to open Profile page) -->
+        <div class="user-avatar" id="userAvatar" onclick="navigateTo('profile')" style="cursor:pointer;" title="View User Profile">A</div>
       </div>
     </header>
 
@@ -892,6 +925,66 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
 
         <div class="card">
           <div class="card-header">Evaluation Config</div>
+          
+          <div style="margin-bottom:16px;">
+            <label class="form-label" style="margin-bottom:6px;">Beginner Model Guide (Hover term for 50-60 word explanation)</label>
+            <div style="display:flex; flex-wrap:wrap;">
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                Random Forest
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">🌲 Random Forest</div>
+                  Random Forest creates a large forest of independent decision trees during training. When making predictions, each tree casts a vote, and the majority decision wins. This ensemble approach prevents individual trees from memorizing noise (overfitting) and delivers high stability across varied real-world data types.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                XGBoost
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">⚡ XGBoost</div>
+                  XGBoost (eXtreme Gradient Boosting) is an advanced machine learning algorithm that builds decision trees sequentially. Each new tree focuses on correcting errors made by previous trees. It is world-renowned in Kaggle competitions for delivering top prediction accuracy on tabular CSV datasets while executing with exceptional computational speed.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                Neural Network
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">🧠 Neural Network</div>
+                  A Neural Network (Multi-Layer Perceptron) mimics the human brain using layers of interconnected nodes called neurons. Inputs pass through hidden layers with weighted connections to learn complex, non-linear relationships. It excels at recognizing deep patterns in intricate datasets, images, and unstructured features.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                Decision Tree
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">🌿 Decision Tree</div>
+                  A Decision Tree breaks down data by asking a sequence of simple yes-or-no questions, creating a tree-like flowchart of decision rules. It is exceptionally easy to visualize and interpret, making it an ideal beginner-friendly baseline model for understanding feature splits.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                Logistic Regression
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">📈 Logistic Regression</div>
+                  Logistic Regression is a foundational statistical model that calculates probabilities for classification outcomes. It measures the relationship between input features and target categories using a smooth S-shaped sigmoid curve, providing a fast, highly interpretable baseline for binary or multi-class predictions.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                SVM
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">📐 Support Vector Machine (SVM)</div>
+                  Support Vector Machine finds the optimal decision boundary (hyperplane) that maximizes the margin distance between different data classes. Using mathematical kernel functions, SVM can project complex non-linear data into higher dimensions to cleanly separate difficult overlapping classes.
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
             <div>
               <label class="form-label">Model Estimator</label>
@@ -950,6 +1043,57 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
 
         <div class="card">
           <div class="card-header">Training Options</div>
+          
+          <div style="margin-bottom:16px;">
+            <label class="form-label" style="margin-bottom:6px;">Beginner Guide & Cross-Validation Concepts (Hover for 50-60 word explanation)</label>
+            <div style="display:flex; flex-wrap:wrap;">
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                5-Fold Cross Validation
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">📊 5-Fold Cross Validation</div>
+                  5-Fold Cross Validation splits your dataset into 5 equal parts. The model trains on 4 parts and tests on the remaining 1 part, repeating this process 5 times so every data point is tested once. This gives a reliable estimate of model performance without risking lucky split results.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                10-Fold Cross Validation
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">🔄 10-Fold Cross Validation</div>
+                  10-Fold Cross Validation divides your dataset into 10 equal sections. The algorithm trains on 9 sections and tests on the remaining 1 section, repeating this 10 times. It provides an even more robust and thorough accuracy benchmark than 5-fold CV, especially for larger datasets.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                XGBoost
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">⚡ XGBoost</div>
+                  XGBoost (eXtreme Gradient Boosting) is an advanced machine learning algorithm that builds decision trees sequentially. Each new tree focuses on correcting errors made by previous trees. It is world-renowned in Kaggle competitions for delivering top prediction accuracy on tabular CSV datasets while executing with exceptional computational speed.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                Random Forest
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">🌲 Random Forest</div>
+                  Random Forest creates a large forest of independent decision trees during training. When making predictions, each tree casts a vote, and the majority decision wins. This ensemble approach prevents individual trees from memorizing noise (overfitting) and delivers high stability across varied real-world data types.
+                </div>
+              </div>
+
+              <div class="gemini-tooltip-badge">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                Neural Network
+                <div class="gemini-tooltip-box">
+                  <div class="tooltip-title">🧠 Neural Network</div>
+                  A Neural Network (Multi-Layer Perceptron) mimics the human brain using layers of interconnected nodes called neurons. Inputs pass through hidden layers with weighted connections to learn complex, non-linear relationships. It excels at recognizing deep patterns in intricate datasets, images, and unstructured features.
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
             <div>
               <label class="form-label">Model Estimator</label>
@@ -978,6 +1122,39 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
           <div class="metrics-grid" id="trainMetricsGrid"></div>
           <div class="card-header" style="margin-top:16px;">Execution Log</div>
           <div class="log-console" id="trainLogConsole"></div>
+        </div>
+      </div>
+
+      <!-- 7. USER PROFILE PAGE -->
+      <div class="view-page" id="page-profile">
+        <div class="page-header">
+          <h1 class="page-title">User Profile & Activity</h1>
+          <p class="page-subtitle">Manage your account profile details and view historical machine learning problem statements entered in the Describe box.</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 2fr; gap:20px; align-items:flex-start;">
+          <!-- Profile Info Card -->
+          <div class="card" style="text-align:center; padding:24px;">
+            <div class="user-avatar" id="profileCardAvatar" style="width:64px; height:64px; font-size:1.8rem; margin:0 auto 14px auto; background:var(--accent-primary); color:#FFF;">A</div>
+            <h2 style="font-family:var(--font-heading); font-size:1.25rem; font-weight:700; color:var(--text-main); margin-bottom:4px;" id="profileName">User Name</h2>
+            <div style="font-size:0.85rem; color:var(--text-muted); font-family:var(--font-mono); margin-bottom:16px;" id="profileEmail">user@datadealers.local</div>
+            
+            <div style="display:inline-block; padding:4px 12px; background:var(--accent-subtle); border-radius:var(--radius-sm); font-size:0.75rem; font-weight:600; color:var(--accent-primary);">
+              DataDealers Member
+            </div>
+          </div>
+
+          <!-- Problem History Card -->
+          <div class="card">
+            <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <span>Describe Box Problem History</span>
+              <span style="font-size:0.78rem; font-weight:600; color:var(--text-muted); background:var(--bg-subtle); padding:3px 8px; border-radius:var(--radius-sm);" id="profileProblemCount">0 Problems Entered</span>
+            </div>
+            
+            <div id="profileProblemsList" style="display:flex; flex-direction:column; gap:12px; margin-top:14px;">
+              <!-- Dynamically populated problem history -->
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1099,8 +1276,16 @@ async function handleAuth(e) {
     }
 
     // Success
-    activeUser = data.name;
-    document.getElementById('userAvatar').textContent = activeUser.charAt(0).toUpperCase();
+    activeUser = {
+      name: data.name || email.split('@')[0] || 'User',
+      email: data.email || email || ''
+    };
+    try {
+      localStorage.setItem('dd_active_user', JSON.stringify(activeUser));
+    } catch (e) {}
+
+    const userNameStr = typeof activeUser === 'object' ? activeUser.name : activeUser;
+    document.getElementById('userAvatar').textContent = (userNameStr || 'U').charAt(0).toUpperCase();
 
     // Render DB Quote on Entry
     if (data.quote) {
@@ -1143,7 +1328,8 @@ function navigateTo(pageId) {
       'cleaning': { group: 'Data Works', groupPage: 'cleaning', label: 'Dataset Cleaning' },
       'datasets': { group: 'Data Works', groupPage: 'datasets', label: 'Dataset Supply' },
       'test': { group: 'Model Works', groupPage: 'test', label: 'Testing Framework' },
-      'training': { group: 'Model Works', groupPage: 'training', label: 'Training Framework' }
+      'training': { group: 'Model Works', groupPage: 'training', label: 'Training Framework' },
+      'profile': { label: 'User Profile' }
     };
     const info = pagesMap[pageId] || { label: pageId };
     if (info.group) {
@@ -1164,6 +1350,11 @@ function navigateTo(pageId) {
       emptyState.style.display = 'none';
       mainContent.style.display = 'block';
     }
+  }
+
+  // Render Profile Page details when navigated
+  if (pageId === 'profile') {
+    renderProfilePage();
   }
 }
 
@@ -1190,9 +1381,80 @@ async function submitDescribe() {
   const text = document.getElementById('describeInput').value.trim();
   if (!text) return alert('Please enter a problem description.');
   currentProblemDesc = text;
+  saveUserProblem(text);
   simplifyCount = 0; // Reset simplify counter for new problem
   navigateTo('guidance');
   await fetchModelGuidance(false, 0);
+}
+
+function saveUserProblem(text) {
+  if (!text) return;
+  try {
+    let history = JSON.parse(localStorage.getItem('dd_user_problems') || '[]');
+    if (!history.some(p => p.text === text)) {
+      history.unshift({ text: text, date: new Date().toLocaleString() });
+      localStorage.setItem('dd_user_problems', JSON.stringify(history));
+    }
+  } catch (e) {}
+}
+
+function loadProblemToDescribe(idx) {
+  try {
+    const history = JSON.parse(localStorage.getItem('dd_user_problems') || '[]');
+    if (history[idx]) {
+      const inputEl = document.getElementById('describeInput');
+      if (inputEl) {
+        inputEl.value = history[idx].text;
+        updateWordCount();
+      }
+      navigateTo('describe');
+    }
+  } catch (e) {}
+}
+
+function renderProfilePage() {
+  let user = activeUser;
+  if (!user || typeof user !== 'object') {
+    try {
+      user = JSON.parse(localStorage.getItem('dd_active_user') || 'null');
+    } catch (e) {}
+  }
+  if (!user) {
+    user = { name: typeof activeUser === 'string' && activeUser ? activeUser : 'Alex Mercer', email: 'alex@datadealers.local' };
+  }
+
+  const nameEl = document.getElementById('profileName');
+  const emailEl = document.getElementById('profileEmail');
+  const avatarEl = document.getElementById('profileCardAvatar');
+  
+  if (nameEl) nameEl.textContent = user.name || 'User';
+  if (emailEl) emailEl.textContent = user.email || 'No email registered';
+  if (avatarEl) avatarEl.textContent = (user.name || 'U').charAt(0).toUpperCase();
+
+  let history = [];
+  try {
+    history = JSON.parse(localStorage.getItem('dd_user_problems') || '[]');
+  } catch (e) {}
+
+  const countEl = document.getElementById('profileProblemCount');
+  if (countEl) countEl.textContent = `${history.length} Problem${history.length === 1 ? '' : 's'} Entered`;
+
+  const listEl = document.getElementById('profileProblemsList');
+  if (listEl) {
+    if (history.length === 0) {
+      listEl.innerHTML = `<div style="padding:24px; text-align:center; color:var(--text-muted); font-size:0.88rem;">No problem statements entered yet. Go to <a href="#" onclick="navigateTo('describe'); return false;" style="color:var(--accent-primary); font-weight:600;">Describe Problem</a> to enter your first machine learning goal.</div>`;
+    } else {
+      listEl.innerHTML = history.map((item, idx) => `
+        <div style="background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:14px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+          <div>
+            <div style="font-size:0.75rem; font-weight:600; color:var(--text-muted); margin-bottom:4px;">#${history.length - idx} • ${item.date}</div>
+            <div style="font-size:0.88rem; color:var(--text-main); line-height:1.5;">"${item.text}"</div>
+          </div>
+          <button class="btn btn-secondary" style="padding:6px 12px; font-size:0.78rem; flex-shrink:0;" onclick="loadProblemToDescribe(${idx})">Load & Analyze →</button>
+        </div>
+      `).join('');
+    }
+  }
 }
 
 // Item 1 Fix: Repeatable "Make this simpler" with level tracking and button loading state

@@ -604,13 +604,16 @@ def guidance():
                     "Write the explanation in plain, accessible 12th-grade level English for someone with no AI or coding background."
                 )
             else:
-                simplicity_instruction = "Provide a clear, professional data-science recommendation suitable for both non-technical users and analysts."
+                simplicity_instruction = (
+                    "Provide a clear, elaborated, beginner-friendly data-science recommendation. "
+                    "Use simple, easy-to-understand vocabulary without dense academic jargon."
+                )
 
             prompt_text = f"""
-You are an expert Data Science advisor for DataDealers.
+You are an expert, friendly Data Science advisor for DataDealers.
 User Problem Description: "{desc}"
 User Selected Objective: "{user_objective}"
-Simplicity Level: Level {simplify_level} ({"ELI5 plain analogy" if simplify_level >= 3 else "Plain language"})
+Simplicity Level: Level {simplify_level} ({"ELI5 plain analogy" if simplify_level >= 3 else "Beginner friendly plain language"})
 
 Analyze the problem and produce a structured JSON object with EXACTLY the following keys:
 1. "objective": One of ("classification", "regression", "clustering", "nlp", "forecasting") that best fits the problem.
@@ -618,7 +621,11 @@ Analyze the problem and produce a structured JSON object with EXACTLY the follow
 3. "problem_restatement": Plain language restatement of what the user is actually asking for.
 4. "existing_solution": Explanation of whether a standard model/approach already exists for this exact problem statement, and what it is.
 5. "family_mismatch_note": If the user requested one model family (e.g., classification) but another family (e.g., regression) is more appropriate, explain why clearly. If no mismatch, set to null.
-6. "analysis": Detailed narrative response covering (a) best model type & data type, (b) existing solution context, (c) restatement, and (d) family mismatch advice. {simplicity_instruction}
+6. "analysis": Provide an ELABORATED, beginner-friendly narrative formatted into 3 distinct sections. IMPORTANT: Every section MUST be progressively longer and more detailed than the previous section:
+   - Section 1 (Quick Overview): Short & simple introduction (approx 2 sentences).
+   - Section 2 (Detailed Breakdown): Expanded explanation with practical everyday concepts (approx 4-5 sentences, longer than Section 1).
+   - Section 3 (Comprehensive Deep Dive & Strategic Recommendation): Full elaborated breakdown covering data inputs, model selection, and practical next steps (approx 7-8 sentences, noticeably longer than Section 2).
+   Use simple vocabulary throughout. {simplicity_instruction}
 7. "models": Array of 3-4 model objects, each with:
    - "name": String model name (e.g., "Random Forest", "XGBoost", "Logistic Regression")
    - "desc": Concise description
@@ -661,22 +668,30 @@ Return ONLY valid JSON without markdown formatting or code blocks.
 
     if simplify_level >= 3:
         analysis_text = (
-            f"Think of this like guessing how many marbles are in a jar! 🎯\n\n"
-            f"What you want to do: Look at information you already have to predict what will happen next.\n"
-            f"Best tool to use: A {obj.capitalize()} model. It's like asking a smart helper to look for patterns and give you the best guess!"
+            f"Section 1: Quick Overview\n"
+            f"Think of this like guessing how many marbles are in a jar! 🎯 You want to use existing clues to figure out what happens next.\n\n"
+            f"Section 2: Detailed Breakdown\n"
+            f"Imagine you have a smart helper looking at past records. By comparing old patterns, your helper discovers trends that repeat. A {obj.capitalize()} model acts like this smart helper, connecting clues in your dataset to give you clear answers.\n\n"
+            f"Section 3: Comprehensive Deep Dive & Strategic Recommendation\n"
+            f"To get started, you will organize your information into a clean spreadsheet table with rows for items and columns for characteristics. The algorithm will then read through every row, learning how different traits influence the final outcome. Once trained, your model can instantly analyze new incoming data and predict results with high accuracy. This approach saves time, reduces human error, and gives your business a reliable tool for decision-making."
         )
     elif simplify_level == 2:
         analysis_text = (
-            f"Simplified Breakdown (Level 2):\n"
-            f"Goal: Analyze pattern relationships in your data.\n"
-            f"Recommended Model: {obj.capitalize()} algorithm using a standard CSV table.\n"
-            f"Why: This approach learns from past examples to make automatic guesses on new data."
+            f"Section 1: Quick Overview\n"
+            f"Your goal is to analyze patterns in your data to make automatic predictions.\n\n"
+            f"Section 2: Detailed Breakdown\n"
+            f"Machine learning algorithms excel at examining historical tables to discover hidden relationships. By feeding your dataset into a {obj.capitalize()} pipeline, the computer learns how input variables relate to your target output. This creates a reusable formula for evaluating future scenarios.\n\n"
+            f"Section 3: Comprehensive Deep Dive & Strategic Recommendation\n"
+            f"We recommend organizing your dataset as a structured CSV table containing distinct columns for each feature. Supervised learning models like Random Forest and XGBoost will train on these columns, measuring feature importance and minimizing prediction errors. After training, you can run evaluation metrics such as accuracy or R-squared to confirm your model is ready for deployment. This structured workflow ensures trustworthy predictions for your application."
         )
     else:
         analysis_text = (
-            f"Problem Restatement: You want to analyze your data and make predictions based on your input features.\n\n"
-            f"Recommended Approach: This problem is best suited for {obj.capitalize()} models using Tabular CSV data.\n\n"
-            f"Existing Solutions: Standard industry algorithms like Random Forest and XGBoost are widely used for this task and achieve high baseline performance."
+            f"Section 1: Quick Overview\n"
+            f"You want to analyze your data patterns and generate automated predictions for your target goal.\n\n"
+            f"Section 2: Detailed Breakdown\n"
+            f"Your problem statement aligns best with a {obj.capitalize()} machine learning architecture. Supervised learning models process tabular data by mapping relationship patterns between independent input features and the primary target column. This allows the computer to learn rules that generalize well to unseen real-world cases.\n\n"
+            f"Section 3: Comprehensive Deep Dive & Strategic Recommendation\n"
+            f"To achieve high predictive performance, we recommend uploading your tabular CSV file into our Data Works cleaning pipeline to handle missing values and outliers. Once prepared, evaluate top-performing baseline estimators such as Random Forest and XGBoost using k-fold cross-validation. This cross-validation strategy guarantees that your model is tested across multiple subset folds, preventing overfitting and confirming stable accuracy metrics. Following this step-by-step path gives you a robust, beginner-friendly deployment pipeline."
         )
 
     if simplify_level > 0:
