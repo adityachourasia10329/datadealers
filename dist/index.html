@@ -660,6 +660,7 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
           <div class="nav-submenu">
             <a class="submenu-link" id="nav-cleaning" onclick="navigateTo('cleaning')">Dataset Cleaning</a>
             <a class="submenu-link" id="nav-datasets" onclick="navigateTo('datasets')">Dataset Supply</a>
+            <a class="submenu-link" id="nav-generation" onclick="navigateTo('generation')">Dataset Generation</a>
           </div>
         </div>
       </div>
@@ -958,6 +959,15 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
 
         <div id="datasetListContainer">
           <!-- Split bar layout: Name left, Download right -->
+        </div>
+      </div>
+
+
+      <!-- DATASET GENERATION PAGE (BLANK PAGE) -->
+      <div class="view-page" id="page-generation">
+        <div class="page-header">
+          <h1 class="page-title">Dataset Generation</h1>
+          <p class="page-subtitle">Generate synthetic dataset samples and custom data benchmarks.</p>
         </div>
       </div>
 
@@ -1535,7 +1545,7 @@ function navigateTo(pageId) {
   if (navItem) navItem.classList.add('active');
 
   // Sync Submenu Parent State
-  if (['cleaning', 'datasets'].includes(pageId)) {
+  if (['cleaning', 'datasets', 'generation'].includes(pageId)) {
     document.getElementById('item-data-works').classList.add('open');
   } else if (['test', 'training'].includes(pageId)) {
     document.getElementById('item-model-works').classList.add('open');
@@ -1548,6 +1558,7 @@ function navigateTo(pageId) {
       'guidance': { label: 'Model Guidance' },
       'cleaning': { group: 'Data Works', groupPage: 'cleaning', label: 'Dataset Cleaning' },
       'datasets': { group: 'Data Works', groupPage: 'datasets', label: 'Dataset Supply' },
+      'generation': { group: 'Data Works', groupPage: 'generation', label: 'Dataset Generation' },
       'test': { group: 'Model Works', groupPage: 'test', label: 'Testing Framework' },
       'training': { group: 'Model Works', groupPage: 'training', label: 'Training Framework' },
       'profile': { label: 'User Profile' },
