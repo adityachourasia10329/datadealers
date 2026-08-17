@@ -242,23 +242,51 @@ button, input, select, textarea { font-family: inherit; color: inherit; }
 .nav-link .nav-arrow { margin-left: auto; transition: transform 0.2s; }
 .nav-item.open .nav-arrow { transform: rotate(90deg); }
 
-/* Collapsed Sidebar Alignment Fix: Icons aligned to right side of 64px column */
+/* Collapsed Sidebar Alignment & Hover Tooltips */
 .sidebar.collapsed .nav-link {
-  justify-content: flex-end;
-  padding-right: 18px;
-  padding-left: 0;
+  justify-content: center;
+  padding: 9px 0;
 }
 .sidebar.collapsed .nav-link span,
 .sidebar.collapsed .nav-link .nav-arrow {
   display: none !important;
 }
 .sidebar.collapsed .sidebar-header {
-  justify-content: flex-end;
-  padding-right: 14px;
-  padding-left: 10px;
+  justify-content: center;
+  padding: 0;
 }
-.sidebar.collapsed .sidebar-logo span {
+.sidebar.collapsed .sidebar-logo {
   display: none !important;
+}
+
+/* Collapsed Sidebar Hover Feature Name Tooltips */
+.sidebar.collapsed .nav-link[data-tooltip] {
+  position: relative;
+}
+.sidebar.collapsed .nav-link[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 10px;
+  background: var(--text-main);
+  color: var(--text-inverse);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: var(--shadow-md);
+  z-index: 200;
+}
+.sidebar.collapsed .nav-link[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Submenu Flyout / Accordion */
@@ -635,13 +663,13 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
       <div class="nav-group">
         <div class="nav-group-label">Overview</div>
         <div class="nav-item">
-          <a class="nav-link active" id="nav-describe" onclick="navigateTo('describe')">
+          <a class="nav-link active" id="nav-describe" onclick="navigateTo('describe')" title="Describe Problem" data-tooltip="Describe Problem">
             <svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             <span>Describe Problem</span>
           </a>
         </div>
         <div class="nav-item">
-          <a class="nav-link" id="nav-guidance" onclick="navigateTo('guidance')">
+          <a class="nav-link" id="nav-guidance" onclick="navigateTo('guidance')" title="Model Guidance" data-tooltip="Model Guidance">
             <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
             <span>Model Guidance</span>
           </a>
@@ -652,7 +680,7 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
       <div class="nav-group">
         <div class="nav-group-label">Data Works</div>
         <div class="nav-item" id="item-data-works">
-          <div class="nav-link" onclick="toggleSubmenu('item-data-works')">
+          <div class="nav-link" onclick="toggleSubmenu('item-data-works')" title="Data Works" data-tooltip="Data Works">
             <svg class="icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
             <span>Data Works</span>
             <svg class="icon icon-sm nav-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
