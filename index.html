@@ -963,11 +963,21 @@ details.how-it-works .step-list li { margin-bottom: 4px; }
       </div>
 
 
-      <!-- DATASET GENERATION PAGE (BLANK PAGE) -->
+      <!-- DATASET GENERATION PAGE -->
       <div class="view-page" id="page-generation">
         <div class="page-header">
           <h1 class="page-title">Dataset Generation</h1>
           <p class="page-subtitle">Generate synthetic dataset samples and custom data benchmarks.</p>
+        </div>
+
+        <div class="card" style="padding:16px; margin-bottom:16px;">
+          <div style="position:relative; display:flex; align-items:center;">
+            <input type="text" class="form-input" id="generationSearchInput" placeholder="Search dataset generation options..." style="padding-right:52px; width:100%;" onkeydown="if(event.key==='Enter') executeGenerationSearch()">
+            <button class="btn btn-primary" id="generationSearchBtn" onclick="executeGenerationSearch()" style="position:absolute; right:4px; top:50%; transform:translateY(-50%); height:34px; width:40px; padding:0; border-radius:var(--radius-sm);" title="Start Searching">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+          </div>
+          <div id="generationSearchResults" style="margin-top:12px; display:none;"></div>
         </div>
       </div>
 
@@ -2123,6 +2133,22 @@ async function checkBackendConnection() {
   } catch (e) {
     // Keep overlay active
   }
+}
+
+// --- Dataset Generation Search Handler ---
+function executeGenerationSearch() {
+  const inputEl = document.getElementById('generationSearchInput');
+  const resultsDiv = document.getElementById('generationSearchResults');
+  if (!inputEl || !resultsDiv) return;
+  const query = inputEl.value.trim();
+  if (!query) {
+    resultsDiv.style.display = 'none';
+    resultsDiv.innerHTML = '';
+    return;
+  }
+  const cleanQuery = query.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  resultsDiv.style.display = 'block';
+  resultsDiv.innerHTML = `<div style="font-size:0.88rem; color:var(--text-muted); padding:10px 4px;">Searching dataset generation options for "<strong>${cleanQuery}</strong>"...</div>`;
 }
 
 // --- Init ---
